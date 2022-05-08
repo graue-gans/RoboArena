@@ -1,0 +1,13 @@
+name: RoboArena Actions
+
+on:
+  push:
+    paths:
+      - '*.py'
+
+jobs:
+  flake8_py3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run flake8
+        uses: suo/flake8-github-action@releases/v1
