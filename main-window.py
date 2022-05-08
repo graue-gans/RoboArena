@@ -12,7 +12,7 @@ def main():
     w.resize(250, 150)  # in 1 px
     w.move(300, 300)
     w.setWindowTitle('RoboArena')
-    
+
     # show window on screen
     w.show()
 
