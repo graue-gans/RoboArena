@@ -26,6 +26,10 @@ class ArenaWindow(QMainWindow):
         self.wallsize = 4
         self.initialBackground(self.windowSizeTiles, self.wallsize)
         self.Robbie = BasicRobot(500, 500, 20, 135)
+        self.Robbie2 = BasicRobot(300, 300, 20, 135)
+        self.Robbie3 = BasicRobot(200, 200, 20, 135)
+        self.Robbie4 = BasicRobot(100, 100, 20, 135)
+
 
 
 
@@ -38,14 +42,15 @@ class ArenaWindow(QMainWindow):
 
 
 
-
-    def drowrobot (self,qp):
+    #draw the robot on the screen at its position
+    def drawrobot (self,qp,robot):
         #painter = QPainter(self)
-        qp.setPen(QPen(QColor(self.Robbie.color[0], self.Robbie.color[1], self.Robbie.color[2]), 8, Qt.SolidLine))
-        qp.setBrush(QBrush(QColor(self.Robbie.color[0], self.Robbie.color[1], self.Robbie.color[2]), Qt.SolidPattern))
-        qp.drawEllipse(self.Robbie.posx, self.Robbie.posy, self.Robbie.r, self.Robbie.r)
+        qp.setPen(QPen(QColor(robot.color[0], robot.color[1], robot.color[2]), 8, Qt.SolidLine))
+        qp.setBrush(QBrush(QColor(robot.color[0], robot.color[1], robot.color[2]), Qt.SolidPattern))
+        qp.drawEllipse(robot.posx, robot.posy, robot.r, robot.r)
 
-    def moveRobbie(self):#dummy movement just to show how it works.
+#V
+    def moveRobbie(self):#dummy movement for robot1 just to show how it works.
         count = 1
         richtung = (4,4)
         while(1):
@@ -61,12 +66,19 @@ class ArenaWindow(QMainWindow):
                 time.sleep(0.01)
                 self.update()
 
-    def drawInformation(self,robot):
-        l1robot1 = QLabel("Robot")
-        l1robot1.setGeometry(0,0,200,50)
-
-
-
+    def moveRobbie2(self):#dummy movement for robot 2 just to show how it works.
+        count = 1
+        richtung = (2,1)
+        while(1):
+            for i in range(self.arenaSizeinPx):
+                if self.Robbie2.posx + 40 + self.Robbie2.r >= self.arenaSizeinPx or self.Robbie2.posy + 40 + self.Robbie2.r >= self.arenaSizeinPx:
+                    richtung = (-4, -2)
+                elif self.Robbie2.posx - 40 - self.Robbie2.r <= 0 or self.Robbie2.posy - 40 - self.Robbie2.r <= 0:
+                    richtung = (10, 2)
+                self.Robbie2.posx += richtung[0]
+                self.Robbie2.posy += richtung[1]
+                time.sleep(0.01)
+                self.update()
 
 
 
@@ -81,14 +93,15 @@ class ArenaWindow(QMainWindow):
                 else:
                     self.background[i].append(2)
 
-
+    #has its own thread, is aktiv when ever we update or change the widget
     def paintEvent(self, e):
-        #self.loadbackground()
+        self.loadbackground()
         qp = QPainter()
         qp.begin(self)
         self.drawtiles(qp)
-        self.drowrobot(qp)
-        self.reset() #reset the background
+        self.drawrobot(qp,self.Robbie)
+        self.drawrobot(qp,self.Robbie2)
+        #self.reset() #reset the background
 
         qp.end()
 
@@ -97,16 +110,13 @@ class ArenaWindow(QMainWindow):
         qp.setBrush(QColor(color))
         qp.drawRect(i * self.tilesize, j * self.tilesize, 10, 10)
 
+    #close the window and the threads by closing the window
     def closeEvent(self, e):
-       self.t.close()
+       self.et_thread_1.close()
        self.close()
 
-    def set_t(self,t):
-        self.t = t
 
-
-
-    #draw the tiles
+    #draw the tiles depending on the number of it
     def drawtiles(self, qp):
         for i in range(self.windowSizeTiles):
             for j in range(self.windowSizeTiles):
@@ -136,13 +146,7 @@ class ArenaWindow(QMainWindow):
                     qp.setPen(Qt.NoPen)  #arena
                     self.drawTile(qp,'#000000' ,i,j)
 
-
-
-
-
-
-
-
+#inialize the background again
     def reset(self):
         with open('background.csv', 'w', encoding='UTF8',newline='') as f:
             firstline = True
@@ -151,6 +155,7 @@ class ArenaWindow(QMainWindow):
                     writer.writerow(self.background[i])
         f.close()
 
+#load the background from a csv-data
     def loadbackground(self):
         file = open('background.csv')
         csvreader = csv.reader(file)
@@ -185,13 +190,3 @@ class ArenaWindow(QMainWindow):
            # for j in range(self.windowSizeTiles):
               #  print(self.background[i][j], end=" ")
            # print()
-
-
-
-
-
-
-
-
-
-

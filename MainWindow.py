@@ -50,8 +50,11 @@ class Window(QWidget):
     def arenaWindowCall(self):
         self.w = ArenaWindow(1040, self)
         t = threading.Thread(target=self.w.moveRobbie,args=()) #thread1 for robot1
+        t2 = threading.Thread(target=self.w.moveRobbie2, args=())  # thread1 for robot1
         t.start()
-        self.w.set_t(t)
+        t2.start()
+        self.w.set_thread_1 = t
+
 
 
 
