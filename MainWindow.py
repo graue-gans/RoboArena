@@ -37,11 +37,6 @@ class Window(QWidget):
             "font-variant: small-caps;"
             "color:black;"
         )
-
-
-
-
-
         oImage = QImage("robotpic.png")
         sImage = oImage.scaled(QSize(self.windowwidth, self.windowHeight))  # resize Image to widgets size
         palette = QPalette()
@@ -54,8 +49,10 @@ class Window(QWidget):
 
     def arenaWindowCall(self):
         self.w = ArenaWindow(1300, self)
-        #t = threading.Thread(target=self.w.updatemap,args=()) #multithreading to update the arena consistently while the main thread does other things
-        #t.start()
+        t = threading.Thread(target=self.w.moveRobbie,args=()) #thread1 for robot1
+        t.start()
+        self.w.set_t(t)
+
 
 
 

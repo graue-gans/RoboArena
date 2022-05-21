@@ -1,6 +1,7 @@
 import sys
 import threading
 import time
+import csv
 
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
@@ -9,8 +10,10 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QPainter, QBrush, QPen, QColor
 from Robot import BasicRobot
 from PyQt5 import QtCore, QtGui, QtWidgets
 from ArenaButton import ArenaButton
-
 import threading
+
+
+
 class ArenaWindow(QMainWindow):
     def __init__(self, arenaSizeinPx,window):
         window.hide()
@@ -21,67 +24,156 @@ class ArenaWindow(QMainWindow):
         self.initArenaWindow()
         self.background = []
         self.initialBackground(self.windowSizeTiles, 13, 2)
-        self.printBackground()
+        self.Robbie = BasicRobot(500, 500, 20, 135)
+        self.drawInformation(self.Robbie)
+
 
 
 
     def initArenaWindow(self):
         self.setFixedSize(self.arenaSizeinPx, self.arenaSizeinPx)
         self.setWindowTitle("Robo-Arena-Team")
-        self.spawnRobot()
         self.show()
 
 
 
-    def spawnRobot(self):
-        Robbie = BasicRobot((500, 500), 4, 135)
-        painter = QPainter(self)
-        painter.setPen(QPen(QColor(Robbie.color[0], Robbie.color[1], Robbie.color[2]), 8, Qt.SolidLine))
-        painter.setBrush(QBrush(QColor(Robbie.color[0], Robbie.color[1], Robbie.color[2]), Qt.SolidPattern))
-        painter.drawEllipse(Robbie.pos[0], Robbie.pos[1], Robbie.r, Robbie.r)
 
-    #each number in this 2-d list represent a diffrent tile
-    def initialBackground(self, arenasizeTiles, wallsize, wattersize):
+    def drowrobot (self,qp):
+        #painter = QPainter(self)
+        qp.setPen(QPen(QColor(self.Robbie.color[0], self.Robbie.color[1], self.Robbie.color[2]), 8, Qt.SolidLine))
+        qp.setBrush(QBrush(QColor(self.Robbie.color[0], self.Robbie.color[1], self.Robbie.color[2]), Qt.SolidPattern))
+        qp.drawEllipse(self.Robbie.posx, self.Robbie.posy, self.Robbie.r, self.Robbie.r)
+
+    def moveRobbie(self):
+        count = 1
+        richtung = (4,4) #dummy just to show how it works.
+        while(1):
+            for i in range(self.arenaSizeinPx):
+                if self.Robbie.posx + 150 + self.Robbie.r >= self.arenaSizeinPx:
+                    richtung = (-2, -2)
+
+                elif self.Robbie.posx - 150 - self.Robbie.r <= 0:
+                    richtung = (2, 2)
+
+                self.Robbie.posx += richtung[0]
+                self.Robbie.posy += richtung[1]
+                time.sleep(0.01)
+                self.update()
+
+    def drawInformation(self,robot):
+        l1robot1 = QLabel("Robot")
+        l1robot1.setGeometry(0,0,200,50)
+
+
+
+
+
+
+
+#initialize the background, each number in the list is a tile
+    def initialBackground(self, arenasizeTiles, wallsize, outsidesize):
         for i in range(arenasizeTiles):
             self.background.append([])
             for j in range(arenasizeTiles):
                 if (i < wallsize or i >= arenasizeTiles - wallsize) or (j < wallsize or j >= arenasizeTiles - wallsize):
-                    self.background[i].append(0)#0 for green
-                elif (i < wallsize + wattersize or i >= arenasizeTiles - wallsize - wattersize) or (
-                        j < wallsize + wattersize or j >= arenasizeTiles - wallsize - wattersize):
-                    self.background[i].append(1)#1 for red
+                    self.background[i].append(0)
+                elif (i < wallsize + outsidesize or i >= arenasizeTiles - wallsize - outsidesize) or (
+                        j < wallsize + outsidesize or j >= arenasizeTiles - wallsize - outsidesize):
+                    self.background[i].append(1)
                 else:
-                    self.background[i].append(2)# for yellow
+                    self.background[i].append(2)
 
 
     def paintEvent(self, e):
+        self.loadbackground()
         qp = QPainter()
         qp.begin(self)
         self.drawtiles(qp)
+        self.drowrobot(qp)
+        #self.savebackground() #save the background
+
         qp.end()
 
-    #drow the tiles from the 2-d-background-list
+    #draw a tile with paintevent
+    def drawTile(self,qp,color,i,j):
+        qp.setBrush(QColor(color))
+        qp.drawRect(i * self.tilesize, j * self.tilesize, 10, 10)
+
+    def closeEvent(self, e):
+       self.t.close()
+       self.close()
+
+    def set_t(self,t):
+        self.t = t
+
+
+
+    #draw the tiles
     def drawtiles(self, qp):
         for i in range(self.windowSizeTiles):
             for j in range(self.windowSizeTiles):
 
-                if self.background[i][j] == 0:
-                    self.a ='#2ABF0F'
-                    qp.setPen(QColor(self.a))
-                    qp.setBrush(QColor(self.a))
-                    qp.drawRect(i*self.tilesize,j*self.tilesize, 10, 10)
+                if self.background[i][j] == 0:  #outside
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#A6A6A7', i,j)
 
-                elif self.background[i][j] == 1:
-                    self.a ='#E03434'
-                    qp.setPen(QColor(self.a))
-                    qp.setBrush(QColor(self.a))
-                    qp.drawRect(i * self.tilesize, j * self.tilesize, 10, 10)
+                elif self.background[i][j] == 1: #wall
+                    qp.setPen(QColor('#ffffff'))
+                    self.drawTile(qp,'#633E3E',i,j)
+
+                elif self.background[i][j] == 3:
+                    qp.setPen(QColor('#000000'))
+                    self.drawTile(qp,'#901152',i,j)
+
+                elif self.background[i][j] == 4:
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#1D1A1A',i,j)
+
+                elif self.background[i][j] == 5:
+                    qp.setPen(QColor('#000000'))
+                    self.drawTile(qp,'#AFA9A9',i,j)
+
+                elif self.background[i][j] == 6:
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#1B29D4',i,j)
 
                 else:
-                    self.a = '#D4F52F'
-                    qp.setPen(QColor(self.a))
-                    qp.setBrush(QColor(self.a))
-                    qp.drawRect(i * self.tilesize, j * self.tilesize, 10, 10)
+                    qp.setPen(Qt.NoPen)  #arena
+                    self.drawTile(qp,'#000000' ,i,j)
+
+
+
+
+
+
+
+
+    def savebackground(self):
+        with open('background.csv', 'w', encoding='UTF8',newline='') as f:
+            firstline = True
+            writer = csv.writer(f)
+            for i in range(len(self.background)):
+                    writer.writerow(self.background[i])
+        f.close()
+
+    def loadbackground(self):
+        file = open('background.csv')
+        csvreader = csv.reader(file)
+        rows = []
+        for row in csvreader:
+            rows.append(row)
+
+        for i in range(len(rows)):
+            for j in range(len(rows[i])):
+                self.background[j][i] = int(rows[i][j])
+        file.close()
+
+
+
+
+
+
+
 
 
     def updatemap(self): #update the map in a infinit loop, to be able to have an interactive arena. Active the Thread in Mainwindow!
@@ -93,11 +185,11 @@ class ArenaWindow(QMainWindow):
 
 
     #to keep an eye on the backgroundlist
-    def printBackground(self):
-        for i in range(self.windowSizeTiles):
-            for j in range(self.windowSizeTiles):
-                print(self.background[i][j], end=" ")
-            print()
+    #def printBackground(self):
+        #for i in range(self.windowSizeTiles):
+           # for j in range(self.windowSizeTiles):
+              #  print(self.background[i][j], end=" ")
+           # print()
 
 
 
