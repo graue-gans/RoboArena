@@ -23,9 +23,10 @@ class ArenaWindow(QMainWindow):
         super().__init__()
         self.initArenaWindow()
         self.background = []
-        self.initialBackground(self.windowSizeTiles, 13, 2)
+        self.wallsize = 8
+        self.initialBackground(self.windowSizeTiles, self.wallsize)
         self.Robbie = BasicRobot(500, 500, 20, 135)
-        self.drawInformation(self.Robbie)
+
 
 
 
@@ -71,15 +72,12 @@ class ArenaWindow(QMainWindow):
 
 
 #initialize the background, each number in the list is a tile
-    def initialBackground(self, arenasizeTiles, wallsize, outsidesize):
+    def initialBackground(self, arenasizeTiles, wallsize):
         for i in range(arenasizeTiles):
             self.background.append([])
             for j in range(arenasizeTiles):
                 if (i < wallsize or i >= arenasizeTiles - wallsize) or (j < wallsize or j >= arenasizeTiles - wallsize):
                     self.background[i].append(0)
-                elif (i < wallsize + outsidesize or i >= arenasizeTiles - wallsize - outsidesize) or (
-                        j < wallsize + outsidesize or j >= arenasizeTiles - wallsize - outsidesize):
-                    self.background[i].append(1)
                 else:
                     self.background[i].append(2)
 
@@ -113,11 +111,8 @@ class ArenaWindow(QMainWindow):
         for i in range(self.windowSizeTiles):
             for j in range(self.windowSizeTiles):
 
-                if self.background[i][j] == 0:  #outside
-                    qp.setPen(Qt.NoPen)
-                    self.drawTile(qp,'#A6A6A7', i,j)
 
-                elif self.background[i][j] == 1: #wall
+                if self.background[i][j] == 0: #wall
                     qp.setPen(QColor('#ffffff'))
                     self.drawTile(qp,'#633E3E',i,j)
 
