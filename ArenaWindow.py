@@ -23,7 +23,7 @@ class ArenaWindow(QMainWindow):
         super().__init__()
         self.initArenaWindow()
         self.background = []
-        self.wallsize = 8
+        self.wallsize = 4
         self.initialBackground(self.windowSizeTiles, self.wallsize)
         self.Robbie = BasicRobot(500, 500, 20, 135)
 
