@@ -45,16 +45,16 @@ class ArenaWindow(QMainWindow):
         qp.setBrush(QBrush(QColor(self.Robbie.color[0], self.Robbie.color[1], self.Robbie.color[2]), Qt.SolidPattern))
         qp.drawEllipse(self.Robbie.posx, self.Robbie.posy, self.Robbie.r, self.Robbie.r)
 
-    def moveRobbie(self):
+    def moveRobbie(self):#dummy movement just to show how it works.
         count = 1
-        richtung = (4,4) #dummy just to show how it works.
+        richtung = (4,4)
         while(1):
             for i in range(self.arenaSizeinPx):
-                if self.Robbie.posx + 150 + self.Robbie.r >= self.arenaSizeinPx:
-                    richtung = (-2, -2)
+                if self.Robbie.posx + 40 + self.Robbie.r >= self.arenaSizeinPx or self.Robbie.posy + 40 + self.Robbie.r >= self.arenaSizeinPx:
+                    richtung = (-4, -2)
 
-                elif self.Robbie.posx - 150 - self.Robbie.r <= 0:
-                    richtung = (2, 2)
+                elif self.Robbie.posx - 40 - self.Robbie.r <= 0 or self.Robbie.posy - 40 - self.Robbie.r <= 0:
+                    richtung = (10, 2)
 
                 self.Robbie.posx += richtung[0]
                 self.Robbie.posy += richtung[1]
@@ -83,12 +83,12 @@ class ArenaWindow(QMainWindow):
 
 
     def paintEvent(self, e):
-        self.loadbackground()
+        #self.loadbackground()
         qp = QPainter()
         qp.begin(self)
         self.drawtiles(qp)
         self.drowrobot(qp)
-        #self.savebackground() #save the background
+        self.reset() #reset the background
 
         qp.end()
 
@@ -143,7 +143,7 @@ class ArenaWindow(QMainWindow):
 
 
 
-    def savebackground(self):
+    def reset(self):
         with open('background.csv', 'w', encoding='UTF8',newline='') as f:
             firstline = True
             writer = csv.writer(f)
