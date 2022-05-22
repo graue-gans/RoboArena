@@ -77,25 +77,38 @@ class ArenaWindow(QMainWindow):
             for j in range(self.windowSizeTiles):
 
 
-                if self.background[i][j] == 0: #wall
+                if self.background[i][j] == 0:          #wall
                     qp.setPen(QColor('#ffffff'))
                     self.drawTile(qp,'#633E3E',i,j)
 
-                elif self.background[i][j] == 3:
+                elif self.background[i][j] == 1:        #sand
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#Eff18a',i,j)
+
+                elif self.background[i][j] == 2:        #green
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#0a7107',i,j)    
+
+                elif self.background[i][j] == 3:        #rot
                     qp.setPen(QColor('#000000'))
                     self.drawTile(qp,'#901152',i,j)
 
-                elif self.background[i][j] == 4:
+                elif self.background[i][j] == 4:        #schwarz
                     qp.setPen(Qt.NoPen)
                     self.drawTile(qp,'#1D1A1A',i,j)
 
-                elif self.background[i][j] == 5:
-                    qp.setPen(QColor('#000000'))
+                elif self.background[i][j] == 5:        #grau
+                    qp.setPen(Qt.NoPen)
                     self.drawTile(qp,'#AFA9A9',i,j)
 
-                elif self.background[i][j] == 6:
+                elif self.background[i][j] == 6:        #blau
                     qp.setPen(Qt.NoPen)
                     self.drawTile(qp,'#1B29D4',i,j)
+
+                elif self.background[i][j] == 7:        #oil
+                    qp.setPen(Qt.NoPen)
+                    self.drawTile(qp,'#3e3f01',i,j)         
+
 
                 else:
                     qp.setPen(Qt.NoPen)  #arena
