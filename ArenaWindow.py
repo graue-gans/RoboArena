@@ -25,62 +25,16 @@ class ArenaWindow(QMainWindow):
         self.background = []
         self.wallsize = 4
         self.initialBackground(self.windowSizeTiles, self.wallsize)
-        self.Robbie = BasicRobot(500, 500, 20, 135)
-        self.Robbie2 = BasicRobot(300, 300, 20, 135)
-        self.Robbie3 = BasicRobot(200, 200, 20, 135)
-        self.Robbie4 = BasicRobot(100, 100, 20, 135)
-
-
-
-
+        self.Robbie = BasicRobot(500, 500, 20, 135,self)
+        self.Robbie2 = BasicRobot(300, 300, 20, 135,self)
+        self.Robbie3 = BasicRobot(200, 200, 20, 135,self)
+        self.Robbie4 = BasicRobot(100, 100, 20, 135,self)
 
 
     def initArenaWindow(self):
         self.setFixedSize(self.arenaSizeinPx, self.arenaSizeinPx)
         self.setWindowTitle("Robo-Arena-Team")
         self.show()
-
-
-
-    #draw the robot on the screen at its position
-    def drawrobot (self,qp,robot):
-        #painter = QPainter(self)
-        qp.setPen(QPen(QColor(robot.color[0], robot.color[1], robot.color[2]), 8, Qt.SolidLine))
-        qp.setBrush(QBrush(QColor(robot.color[0], robot.color[1], robot.color[2]), Qt.SolidPattern))
-        qp.drawEllipse(robot.posx, robot.posy, robot.r, robot.r)
-
-#V
-    def moveRobbie(self):#dummy movement for robot1 just to show how it works.
-        count = 1
-        richtung = (4,4)
-        while(1):
-            for i in range(self.arenaSizeinPx):
-                if self.Robbie.posx + 40 + self.Robbie.r >= self.arenaSizeinPx or self.Robbie.posy + 40 + self.Robbie.r >= self.arenaSizeinPx:
-                    richtung = (-4, -2)
-
-                elif self.Robbie.posx - 40 - self.Robbie.r <= 0 or self.Robbie.posy - 40 - self.Robbie.r <= 0:
-                    richtung = (10, 2)
-
-                self.Robbie.posx += richtung[0]
-                self.Robbie.posy += richtung[1]
-                time.sleep(0.01)
-                self.update()
-
-    def moveRobbie2(self):#dummy movement for robot 2 just to show how it works.
-        count = 1
-        richtung = (2,1)
-        while(1):
-            for i in range(self.arenaSizeinPx):
-                if self.Robbie2.posx + 40 + self.Robbie2.r >= self.arenaSizeinPx or self.Robbie2.posy + 40 + self.Robbie2.r >= self.arenaSizeinPx:
-                    richtung = (-4, -2)
-                elif self.Robbie2.posx - 40 - self.Robbie2.r <= 0 or self.Robbie2.posy - 40 - self.Robbie2.r <= 0:
-                    richtung = (10, 2)
-                self.Robbie2.posx += richtung[0]
-                self.Robbie2.posy += richtung[1]
-                time.sleep(0.01)
-                self.update()
-
-
 
 
 #initialize the background, each number in the list is a tile
@@ -93,26 +47,27 @@ class ArenaWindow(QMainWindow):
                 else:
                     self.background[i].append(2)
 
-    #has its own thread, is aktiv when ever we update or change the widget
+    #has its own thread, is aktiv when ever we update or change the window
     def paintEvent(self, e):
         self.loadbackground()
         qp = QPainter()
         qp.begin(self)
         self.drawtiles(qp)
-        self.drawrobot(qp,self.Robbie)
-        self.drawrobot(qp,self.Robbie2)
+        self.Robbie.drawrobot(self,qp)
+        self.Robbie2.drawrobot(self,qp)
         #self.reset() #reset the background
 
         qp.end()
 
-    #draw a tile with paintevent
+    #draw a single tile with Qpainter
     def drawTile(self,qp,color,i,j):
         qp.setBrush(QColor(color))
         qp.drawRect(i * self.tilesize, j * self.tilesize, 10, 10)
 
-    #close the window and the threads by closing the window
+    #Kill the threads by closing the window
     def closeEvent(self, e):
-       self.et_thread_1.close()
+       self.Robbie.stop_thread = True
+       self.Robbie2.stop_thread = True
        self.close()
 
 
@@ -146,7 +101,7 @@ class ArenaWindow(QMainWindow):
                     qp.setPen(Qt.NoPen)  #arena
                     self.drawTile(qp,'#000000' ,i,j)
 
-#inialize the background again
+#inialize the background
     def reset(self):
         with open('background.csv', 'w', encoding='UTF8',newline='') as f:
             firstline = True
@@ -167,20 +122,6 @@ class ArenaWindow(QMainWindow):
             for j in range(len(rows[i])):
                 self.background[j][i] = int(rows[i][j])
         file.close()
-
-
-
-
-
-
-
-
-
-    def updatemap(self): #update the map in a infinit loop, to be able to have an interactive arena. Active the Thread in Mainwindow!
-        while True:
-            for i in range(self.windowSizeTiles):
-                for j in range(self.windowSizeTiles):
-                    self.update()
 
 
 
