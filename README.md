@@ -4,6 +4,7 @@ Team 1: Afshin Babei, Alexandra Burger, Arwin Jacob, Max Kehrer
 
 ---
 
+This project is still WIP so visit our [progress page](https://graue-gans.github.io/RoboArena/) for updates and a weekly log
 
 ## DESCRIPTION
 ## DEMO
