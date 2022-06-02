@@ -1,16 +1,12 @@
-import sys
-import threading
-import time
 import csv
-
-
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QImage, QPalette, QBrush, QPainter, QBrush, QPen, QColor, QLinearGradient, QPixmap
+from PyQt5.QtGui import QImage, QPalette, QBrush, QPainter, QBrush, QPen, QColor
 from Robot import BasicRobot
-from PyQt5 import QtCore, QtGui, QtWidgets
-from ArenaButton import ArenaButton
-import threading
+import keyboard
+import time
+
+
 
 
 
@@ -23,12 +19,16 @@ class ArenaWindow(QMainWindow):
         super().__init__()
         self.initArenaWindow()
         self.background = []
-        self.wallsize = 4
+        self.wallsize = 2
         self.initialBackground(self.windowSizeTiles, self.wallsize)
-        self.Robbie = BasicRobot(500, 500, 20, 135,self)
-        self.Robbie2 = BasicRobot(300, 300, 20, 135,self)
-        self.Robbie3 = BasicRobot(200, 200, 20, 135,self)
-        self.Robbie4 = BasicRobot(100, 100, 20, 135,self)
+        self.Robbie = BasicRobot(200, 250, 20, 90,self,(81, 63, 167))
+        self.Robbie2 = BasicRobot(800, 500, 20, 135,self,(255, 1, 1))
+        self.Robbie3 = BasicRobot(800, 200, 20, 135,self,(255, 255, 255))
+        self.Robbie4 = BasicRobot(100, 100, 20, 135,self,(101, 191, 101))
+        self.mouse = [0,0]
+        self.loadbackground()
+        self.active = False
+
 
 
     def initArenaWindow(self):
@@ -49,15 +49,33 @@ class ArenaWindow(QMainWindow):
 
     #has its own thread, is aktiv when ever we update or change the window
     def paintEvent(self, e):
-        self.loadbackground()
         qp = QPainter()
         qp.begin(self)
         self.drawtiles(qp)
-        self.Robbie.drawrobot(self,qp)
-        self.Robbie2.drawrobot(self,qp)
-        #self.reset() #reset the background
+        self.Robbie.drawrobot(self)
+        self.Robbie2.drawrobot(self)
+        self.Robbie3.drawrobot(self)
+        self.Robbie4.drawrobot(self)
+        #self.reset()   #reset the background
 
         qp.end()
+
+    def keyboardListener(self) :
+        while not(BasicRobot.stop_thread):
+            if keyboard.read_key() == 'w':
+                self.Robbie.pressedW = True
+            if keyboard.read_key() == 'r':
+                self.Robbie.pressedR = True
+
+
+
+
+    def mousePressEvent(self, event):
+        self.mouse = (event.x(),event.y())
+        self.active = True
+        if event.button() == Qt.LeftButton:
+            self.active = False
+
 
     #draw a single tile with Qpainter
     def drawTile(self,qp,color,i,j):
@@ -66,8 +84,7 @@ class ArenaWindow(QMainWindow):
 
     #Kill the threads by closing the window
     def closeEvent(self, e):
-       self.Robbie.stop_thread = True
-       self.Robbie2.stop_thread = True
+       BasicRobot.stop_thread = True
        self.close()
 
 
@@ -85,9 +102,11 @@ class ArenaWindow(QMainWindow):
                     qp.setPen(Qt.NoPen)
                     self.drawTile(qp,'#Eff18a',i,j)
 
-                elif self.background[i][j] == 2:        #green
+                elif self.background[i][j] == 2: #green
                     qp.setPen(Qt.NoPen)
-                    self.drawTile(qp,'#0a7107',i,j)    
+                    self.drawTile(qp, '#1D1A1A', i, j)
+                    #qp.setPen(Qt.NoPen)
+                   # self.drawTile(qp,'#0a7107',i,j)
 
                 elif self.background[i][j] == 3:        #rot
                     qp.setPen(QColor('#000000'))
