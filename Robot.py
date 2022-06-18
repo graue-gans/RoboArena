@@ -3,7 +3,7 @@ import time
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QBrush, QPen, QColor, QPainter
 import keyboard
-
+import time
 
 
 class BasicRobot():
@@ -17,24 +17,35 @@ class BasicRobot():
         self.alpha = alpha
         self.color = color
         self.w = arenawindow
+        self.v = [1,1]
         self.pressedW = False
         self.pressedR = False
+        self.running = 0
+        self.not_running = 0
+        self.pressedwr = False
+
 
         self.i = 0
 
     def moveRobbie(self):  #dummy movement for robot1 just to show how it works.
+        counter = 0
+        start = 0
         while not(BasicRobot.stop_thread):
             self.get_direction()
 
-            if (self.posx + self.r == self.w.mouse[0]) and (self.posy +self.r == self.w.mouse[1]):
-                self.posx = self.w.mouse[0]
-                self.posy = self.w.mouse[1]
+            if (self.posx <= self.w.mouse[0] + self.r and self.posx > self.w.mouse[0] - self.r) and (self.posy<= self.w.mouse[1] + self.r and self.posy > self.w.mouse[1] - self.r):
+                self.w.active = False
             if self.w.active:
-                self.movrobot(5,5)
+
+                self.get_direction()
+                self.movrobot()
 
 
 
-            self.pressedW = False
+
+
+            counter += 1
+            counter %= 100
             time.sleep(0.01)
 
     def moveRobbie2(self):  #dummy movement for robot 2 just to show how it works.
@@ -58,19 +69,31 @@ class BasicRobot():
             time.sleep(0.01)
 
     def moveRobbie4(self):
-        self.direction = [1,2]
+        counter = 0
+        running = False
+
         while not (BasicRobot.stop_thread):
-            if self.posx - self.r <= 20 :
-                self.direction = [1,-2]
-            if self.posx + self.r >= 1020:
-                self.direction = [-2, 0]
-            if self.posy - self.r <= 20:
-                self.direction = [4, 1]
-            if  self.posy + self.r >= 1020:
-                self.direction = [-2, -3]
+            print("1")
+            if keyboard.is_pressed('w'):
+                print("max")
+                self.running += 1
+                self.not_running = 0
+                self.get_v()
+                self.movrobot()
+            else:
+                self.not_running += 1
+                self.stopping()
+                self.movrobot()
+            #print(self.v[0], self.v[1])
 
 
-            self.movrobot(2,1)
+
+
+
+
+
+
+
             time.sleep(0.01)
 
 
@@ -88,11 +111,40 @@ class BasicRobot():
     def get_direction(self):
         vector = (self.w.mouse[0] - self.posx, self.w.mouse[1] - self.posy)
         amount = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
-        self.direction = (1 / amount * vector[0], 1 / amount * vector[1])
+        self.direction = [1 / amount * vector[0], 1 / amount * vector[1]]
 
-    def movrobot(self,vx,vy):
-        self.posx += self.direction[0] * vx
-        self.posy += self.direction[1] * vy
+    def stopping(self):
+        if self.v[0] - (1 / 2 * (self.not_running / 100) ** 2 ) > 0 and  self.v[1] - (1 / 2 + (self.not_running / 100) ** 2 ) >0:
+            self.v[0] = self.v[0] - (1 / 2 * (self.not_running / 100) ** 2 * 0.5)
+            self.v[1] = self.v[1] - (1 / 2 + (self.not_running / 100) ** 2  * 0.5)
+        else:
+            self.running = 0
+            self.v[0] = 0
+            self.v[1] = 0
+
+
+    def movrobot(self):
+            self.posx += self.direction[0] * self.v[0]
+            self.posy += self.direction[1] * self.v[1]
+
+
+    def get_v(self):
+        if self.running != 0 :
+            self.v[0]= (1/2 * (self.running/100) ** 2 )
+            self.v[1]= (1/2 + (self.running/100) ** 2 )
+
+    def keyboardListener(self) :
+        while not(BasicRobot.stop_thread):
+           if keyboard.read_key() == 'w' and keyboard.read_key() == 'r':
+               self.pressedwr = True
+               print("peter")
+           if keyboard.read_key() == 'w':
+               self.pressedW= True
+
+           if keyboard.read_key() == 'r':
+               self.pressedR = True
+
+
 
     #rotate by using a rotation matrix
     #def rotaion(self):

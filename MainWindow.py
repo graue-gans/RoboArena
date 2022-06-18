@@ -51,8 +51,14 @@ class Window(QWidget):
         self.w = ArenaWindow(1040, self)
         t = threading.Thread(target=self.w.Robbie.moveRobbie, args=())  # thread1 for robot1
         t2 = threading.Thread(target=self.w.Robbie2.moveRobbie2, args=())  # thread2 for robot2
+        t3 = threading.Thread(target=self.w.Robbie3.moveRobbie3, args=())
+        t4 = threading.Thread(target=self.w.Robbie4.moveRobbie4, args=())
+        #tKeyboard = threading.Thread(target=self.w.Robbie4.keyboardListener, args=())
         t.start()
         t2.start()
+        t3.start()
+        t4.start()
+        #tKeyboard.start()
 
 
 
@@ -70,7 +76,7 @@ class Window(QWidget):
 
 
 app = QApplication(sys.argv)
-w = Window(1920,1080)
+w = Window(1000,1000)
 
 sys.exit(app.exec_())
 

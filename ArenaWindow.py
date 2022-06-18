@@ -60,12 +60,12 @@ class ArenaWindow(QMainWindow):
 
         qp.end()
 
-    def keyboardListener(self) :
-        while not(BasicRobot.stop_thread):
-            if keyboard.read_key() == 'w':
-                self.Robbie.pressedW = True
-            if keyboard.read_key() == 'r':
-                self.Robbie.pressedR = True
+    #def keyboardListener(self) :
+       # while not(BasicRobot.stop_thread):
+         #  if keyboard.is_pressed('w'):
+          #      self.Robbie4.pressedW = True
+         #  if keyboard.read_key() == 'r':
+            #    self.Robbie4.pressedR = True
 
 
 
