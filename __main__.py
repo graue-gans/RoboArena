@@ -16,7 +16,7 @@ class Screen:
         self.window = self.init_main_menu()
 
     def init_main_menu(self):
-        # initialize the main window
+        # initialize the main menu (which is our starting screen)
         # ...
         # return window
         pass
