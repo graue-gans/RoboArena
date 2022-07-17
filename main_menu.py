@@ -1,22 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QPushButton  # only import necessary modules 
+import pygame
+import sys
 
 
-class MainMenu(QWidget):
-    """
-    MainMenu class extends QWidget and is always called upon starting the game
-    """
+class Main_menu():
+    width = 1000
+    height = 1000
 
-    def __init__(self, width, height):
-        pass
-
-    def initUI(self):
-        pass
-
-class MenuButton(QPushButton):
-    """
-    MenuButton class extends QPushButton
-    Is used to create different buttons for the main menu
-    """
-
-    def __init__(self, function, text, window):
-        pass
+    def __init__(self):
+        pygame.init()
+        screen = pygame.display.set_mode((Main_menu.width, Main_menu.height))
