@@ -17,17 +17,17 @@ class Robot():
         self.rotation_vel = rotation_vel
         self.vel = 0
         self.a = a
-        self.current_move = "stop" #stop, forwards, backwards, neutral
         self.vel_vector = [0, 0]
+        self.last_moving_direction = -1 #-1 dummy value, 0: forward , 1:backward
 
 
-
+    #rotate the robot by adjusting the robot_angle
     def rotate_robot(self,left=False, right=False):
         if left:
             self.angle += self.rotation_vel
         if right:
             self.angle -= self.rotation_vel
-
+    #rotate the weapon by adjust the weapon_angle
     def rotate_weapon(self, left=False, right=False):
         if left:
             self.weapon_angle += self.rotation_vel
@@ -35,9 +35,8 @@ class Robot():
             self.weapon_angle -= self.rotation_vel
 
     def draw_robot(self,win,image,gun):
-
         rotate_center_axis(win, image,(self.x,self.y),self.angle)
-        rotate_bottom_left(win, gun,(self.x + 20,self.y),self.weapon_angle)
+        rotate_center_axis(win, gun,(self.x + 20,self.y),self.weapon_angle)
         pygame.display.update()
 
 
@@ -52,33 +51,33 @@ class PlayerRobot(Robot):
     image = pygame.image.load("images/robot.png")
     gun = pygame.image.load("images/Gun_01.png")
 
-    def move_robot(self,last_move):
-        if self.current_move == "backwards":
-            self.vel = min(self.vel + self.a/2, self.max_vel/2)
-        elif self.current_move == "forwards":
-            self.vel = min(self.vel + self.a/2, self.max_vel)
-        self.move_direction(last_move)
 
-
-    def move_direction(self,last_move):
+    def move_direction(self):
         radians = math.radians(self.angle)
         self.vel_vector[0] = math.cos(radians) * self.vel
         self.vel_vector[1] = math.sin(radians) * self.vel
-        if last_move == "forwards":
-            self.y -= self.vel_vector[0]
-            self.x -= self.vel_vector[1]
-        elif last_move == "backwards":
-            self.y += self.vel_vector[0]
-            self.x += self.vel_vector[1]
+        self.y -= self.vel_vector[0]
+        self.x -= self.vel_vector[1]
 
 
-    def deceleration(self,last_move):
+
+    def move_forward(self):
+        self.vel = min(self.vel + self.a, self.max_vel)
+        self.move_direction()
+
+    def move_backward(self):
+        self.vel = max(self.vel - self.a, -self.max_vel/2)
+        self.move_direction()
+
+    def deceleration_forward(self):
         self.vel = max(self.vel - self.a * 2, 0)
-        self.move_direction(last_move)
+        self.move_direction()
 
-    def change_direction_detection(self,last_move):
-        if last_move != self.current_move and self.vel != 0:
-            return True
+
+    def deceleration_backward(self):
+        self.vel = min(self.vel + self.a * 2, 0)
+        self.move_direction()
+
 
 
 

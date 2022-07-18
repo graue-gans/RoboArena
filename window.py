@@ -58,19 +58,7 @@ class window():
             for j in range(self.width_tiles):
                 self.draw_tile(i, j)
 
-    def tile_detection(self):
-        left_click, middle_click, right_click = pygame.mouse.get_pressed()
-        x, y = pygame.mouse.get_pos()
-        x = int(x / 10)
-        y = int(y / 10)
 
-        if left_click:
-            color = 1
-            self.background[x][y] = color
-            print(x, y)
-        if right_click:
-            color = 0
-            self.background[x][y] = color
 
 
 
