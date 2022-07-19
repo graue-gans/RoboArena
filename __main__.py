@@ -1,32 +1,18 @@
 import pygame
 
-_WINDOW_WIDTH = 1000
-_WINDOW_HEIGHT = 1000
-_WINDOW_TITLE = 'RoboArena'
+from main_menu import Main_menu
+
+#start the game from this file
+class Main():
+
+    def __init__(self):
+        self.start_game()
+
+    def start_game(self):
+        menu = Main_menu()
 
 
-class Screen():
-
-    """
-    Main class for the RoboArena game
-    It holds outside parameters and the game window itself
-    """
-
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        # self.title  = title
-        self.init_main_menu()
-
-    def init_main_menu(self):
-        # initialize the main menu (which is our starting screen)
-        # ...
-        # return window
-        # main_menu = Main_menu()
-        print("hey")
-
-    # other methods: init_x_window, ...
 
 
 if __name__ == "__main__":
-    s = Screen(_WINDOW_WIDTH, _WINDOW_HEIGHT)
+    m = Main()
