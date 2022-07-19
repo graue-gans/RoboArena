@@ -2,24 +2,25 @@ import csv
 
 import pygame
 
+from screen import Screen
+
+#todo
+class Tile():
+    #craete the tiles here
+    #initialize a new tile_set variable : tile_set = {"0" : image_tile_1 , ...} and replace the colors with drawn tiles
+    pass
 
 
-
-class Map():
-    pygame.init()
-    width =1000
-    height= 1000
-    screen = pygame.display.set_mode((width, height))
+class Map(Screen):
     scale = 10  # scale a pixel by 10, so we have 10pixel tiles
-    FPS = 60  # default FPS=60
-    clock = pygame.time.Clock()
     horizontal_tiles = 100  # number of horizontal tiles
     vertical_tiles = 100  # number of vertical tiles
+    #todo , replace it
     background = []  # contains all 100x100 tiles, each number represent a tile
+
     tile_set = {"0": (0, 0, 0), "1": (255, 255, 255),
                 "2": (62, 36, 25),
                 "3": (140, 124, 213)}  # each tile can have different color. it will be replaced by images later
-    pygame.init()
 
     # load the background from csv into the background-variable
     def load_background(self, file):

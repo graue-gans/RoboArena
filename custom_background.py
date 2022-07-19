@@ -5,6 +5,7 @@ from map_utility import Map
 
 
 class Custom_background(Map):
+    pygame.init()
     file = 'maps/custom_background.csv'
 
     def __init__(self):
@@ -13,6 +14,8 @@ class Custom_background(Map):
         self.start()
 
     # place/remove a tile by clicking mouse
+    #keep pressing the numbers and place tiles with left click
+    #delete a tile with right click
     def place_tile(self):
         left_click, middle_click, right_click = pygame.mouse.get_pressed()
         x, y = pygame.mouse.get_pos()
@@ -39,13 +42,8 @@ class Custom_background(Map):
     def start(self):
 
         while self.running_game:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-
+            self.close_event()
             self.place_tile()
             self.render_background()
             self.save_background_csv(self.file)
-
-            pygame.display.update()
-            self.clock.tick(self.FPS)
+            self.update_screen()
