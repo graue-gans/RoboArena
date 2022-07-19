@@ -9,7 +9,9 @@ class Robot():
     'Abstract' Robot class
     Contains the basic fields and methods for every robot
     """
-    wall = []
+    #todo
+    wall = [] #contains all positions from each wall-tile to check for a collision
+
 
     def __init__(self, start_position, max_velocity, rotation_velocity, acceleration,robot_image, robot_gun_image):
         self.x, self.y = start_position
