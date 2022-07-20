@@ -16,6 +16,7 @@ class Game_window(Map):
     pygame.init()
 
     def __init__(self):
+        super().__init__()
         self.load_background(self.file)
         self.game()
 
@@ -26,7 +27,7 @@ class Game_window(Map):
 
         while run:
             self.close_event()
-            self.render_background()
+            self.render_background(self.screen)
             player.move_robot()
             player.draw_robot(self.screen)
             self.update_screen()

@@ -1,5 +1,3 @@
-import pygame
-
 from main_menu import Main_menu
 
 #start the game from this file
