@@ -1,34 +1,39 @@
 import csv
-
 import pygame
-
 from screen import Screen
 
-#todo
-class Tile():
-    #craete the tiles here
-    #initialize a new tile_set variable : tile_set = {"0" : image_tile_1 , ...} and replace the colors with drawn tiles
-    pass
+
+class Tileset:
+    def __init__(self): 
+        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/stone.jpg')]
+
+    def load(self, filename):
+        image = pygame.image.load(filename)
+        return image  #, image.get_rect()
 
 
 class Map(Screen):
-    scale = 10  # scale a pixel by 10, so we have 10pixel tiles
-    horizontal_tiles = 100  # number of horizontal tiles
-    vertical_tiles = 100  # number of vertical tiles
-    #todo , replace it
-    background = []  # contains all 100x100 tiles, each number represent a tile
+    def __init__(self, tile_size = 20, horizontal_tiles = 50, vertical_tiles = 50):
+        self.tile_size = tile_size  
+        self.horizontal_tiles = horizontal_tiles  
+        self.vertical_tiles   = vertical_tiles
+        self.background = []  # contains all tiles, each number represent a type of tile
+        self.ts = Tileset()
 
-    tile_set = {"0": (0, 0, 0), "1": (255, 255, 255),
-                "2": (62, 36, 25),
-                "3": (140, 124, 213)}  # each tile can have different color. it will be replaced by images later
-
-    # load the background from csv into the background-variable
+    # load the csv file and create numeric background
     def load_background(self, file):
         f = open(file)
         csvreader = csv.reader(f)
-        self.background = []
         for line in csvreader:
             self.background.append([int(x) for x in line])
+
+    # draw all tiles by using draw_tile method for every tile
+    def render_background(self, screen):
+        screen.fill((0, 0, 0))
+        for i in range(self.vertical_tiles):
+            for j in range(self.horizontal_tiles):
+                tile = self.ts.tiles[self.background[i][j]]
+                screen.blit(tile, (j * self.tile_size, i * self.tile_size))
 
     # create a csv file and fill it with tiles; each number represent a tile
     def save_background_csv(self, file):
@@ -49,20 +54,3 @@ class Map(Screen):
     def reset_map(self, file):
         self.init_empty_background()
         self.save_background_csv(file)
-
-    # draw a single tile depending on its number
-    def draw_tile(self, i, j):
-        if self.background[i][j] == 2:
-            border_size = 1
-        elif self.background[i][j] == 1:
-            border_size = 1
-        else:
-            border_size = 0
-        pygame.draw.rect(self.screen, self.tile_set[str(self.background[i][j])],
-                         (i * self.scale, j * self.scale, self.scale, self.scale), border_size)
-
-    # draw all 100x100 tiles by using draw_tile method for every tile
-    def render_background(self):
-        for i in range(self.horizontal_tiles):
-            for j in range(self.vertical_tiles):
-                self.draw_tile(i, j)
