@@ -9,6 +9,7 @@ class Custom_background(Map):
     file = 'maps/custom_background.csv'
 
     def __init__(self):
+        super().__init__()
         self.running_game = True
         self.load_background(self.file)
         self.start()
@@ -19,23 +20,23 @@ class Custom_background(Map):
     def place_tile(self):
         left_click, middle_click, right_click = pygame.mouse.get_pressed()
         x, y = pygame.mouse.get_pos()
-        x = int(x / 10)  # divide the x-pos by 10 because each tile is 10 pixel, so we have the exact coordinate of the
+        x = int(x / 20)  # divide the x-pos by 10 because each tile is 10 pixel, so we have the exact coordinate of the
         # target tile
-        y = int(y / 10)
+        y = int(y / 20)
         key = pygame.key.get_pressed()
         if key[pygame.K_1]:
             tile = 1
         elif key[pygame.K_2]:
-            tile = 1
-        elif key[pygame.K_3]:
-            tile = 3
+            tile = 2
+        elif key[pygame.K_0]:
+            tile = 0
         else:
             tile = 0
         if left_click:
-            self.background[x][y] = tile  # fill the background with the target-tile
+            self.background[y][x] = tile  # fill the background with the target-tile
         if right_click:
             tile = 0
-            self.background[x][y] = tile
+            self.background[y][x] = tile
         if middle_click:
             self.reset_map(self.file)
 
@@ -44,6 +45,6 @@ class Custom_background(Map):
         while self.running_game:
             self.close_event()
             self.place_tile()
-            self.render_background()
+            self.render_background(self.screen)
             self.save_background_csv(self.file)
             self.update_screen()

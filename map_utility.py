@@ -5,7 +5,7 @@ from screen import Screen
 
 class Tileset:
     def __init__(self): 
-        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/stone.jpg')]
+        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/wall.jpg')]
 
     def load(self, filename):
         image = pygame.image.load(filename)
@@ -32,7 +32,9 @@ class Map(Screen):
         screen.fill((0, 0, 0))
         for i in range(self.vertical_tiles):
             for j in range(self.horizontal_tiles):
-                tile = self.ts.tiles[self.background[i][j]]
+                k = self.background[i][j]
+                if k >= 3: k = 2
+                tile = self.ts.tiles[k]
                 screen.blit(tile, (j * self.tile_size, i * self.tile_size))
 
     # create a csv file and fill it with tiles; each number represent a tile
