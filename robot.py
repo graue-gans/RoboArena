@@ -2,15 +2,13 @@ import math
 
 import pygame
 
-from movement_utility import rotate_at_center,vector_addition,rotate_at_pos
+from movement_utility import rotate_at_center,rotate_at_pos
 
 class Robot():
     """
     'Abstract' Robot class
     Contains the basic fields and methods for every robot
     """
-    #todo
-    wall = [] #contains all positions from each wall-tile to check for a collision
 
 
     def __init__(self, start_position, max_velocity, rotation_velocity, acceleration,robot_image, robot_gun_image):
@@ -46,7 +44,7 @@ class Robot():
     #rotate the image of the robot and its weapon by using movement_utility.py functions
     def draw_robot(self,win):
         rotate_at_center(win, self.robot_image,(self.x,self.y),self.angle)
-        rotate_at_pos(win, self.robot_gun_image,(self.x + 20,self.y),self.weapon_angle)
+        #rotate_at_center(win, self.robot_gun_image,(self.x + 10,self.y + 5),self.weapon_angle) show the weapon
         pygame.display.update()
 
     #find the movement-direction for a given angle and move the robot
@@ -74,9 +72,22 @@ class Robot():
     def deceleration_backward(self,intensity):
         self.vel = min(self.vel + self.a * intensity, 0)
         self.movement_direction()
+    #check if there is a collision
+    def colision_check(self, mask1,img2, x=0, y=0):
+        robo_mask = pygame.mask.from_surface(img2)
+        offset = (int(self.x - x), int(self.y - y))
+        poi = mask1.overlap(robo_mask, offset)
+        if poi is not None:
+            return True
+        else:
+            return False
+    #what todo if there is a collision with the lava
+    def lava_collision(self):
+        print("colision lava")
 
-    def colision_robots(self):
-        pass
+    #what todo if there is a collision with the wall
+    def wall_collision(self):
+        self.vel *= -1
 
 
 
@@ -143,6 +154,7 @@ class PlayerRobot(Robot):
 
           if not moving and self.vel < 0 and not slowing_down_with_space:
               self.deceleration_backward(1/2)
+
 
 
 class EnemyRobot(Robot):
