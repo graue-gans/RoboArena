@@ -1,8 +1,29 @@
 import math
+from numpy.linalg import norm
 
 import pygame
 
 from movement_utility import rotate_at_center,vector_addition,rotate_at_pos
+
+
+class Projectile():
+    def __init__(self, x, y, angle, v, filename):
+        self.x = x
+        self.y = y
+        self.angle_rad = math.radians(angle + 90)
+        self.dir = self.vec_mult((math.cos(self.angle_rad), math.sin(self.angle_rad)), v)
+        self.img = pygame.image.load(filename)
+
+    def vec_mult(self, vec, c):
+        return (vec[0]*c, vec[1]*c)
+
+    def draw(self, screen):
+        screen.blit(self.img, self.img.get_rect(center = (self.x, self.y)))
+
+    def move(self):
+        self.x -= self.dir[0]
+        self.y -= self.dir[1]
+
 
 class Robot():
     """
@@ -25,7 +46,7 @@ class Robot():
         self.robot_image = robot_image
         self.robot_gun_image = robot_gun_image
         self.colision = False
-
+        self.projectiles = []
 
 
     #rotate the robot by adjusting the robot_angle
@@ -45,9 +66,8 @@ class Robot():
 
     #rotate the image of the robot and its weapon by using movement_utility.py functions
     def draw_robot(self,win):
-        rotate_at_center(win, self.robot_image,(self.x,self.y),self.angle)
-        rotate_at_pos(win, self.robot_gun_image,(self.x + 20,self.y),self.weapon_angle)
-        pygame.display.update()
+        rotate_at_center(win, self.robot_image,(self.x, self.y),self.angle)
+        rotate_at_pos(win, self.robot_gun_image,(self.x + 20, self.y),self.weapon_angle)
 
     #find the movement-direction for a given angle and move the robot
     def movement_direction(self):
@@ -78,20 +98,95 @@ class Robot():
     def colision_robots(self):
         pass
 
+    def shoot(self, screen, v = 6, filename = "images/default_projectile.jpg"):
+        p = Projectile(self.x + 38, self.y + 60, self.weapon_angle, v, filename)
+        p.draw(screen)
+        self.projectiles.append(p)
+
+    def update_projectiles(self, screen):
+        for p in self.projectiles:
+            p.move()
+            p.draw(screen)
+
+    def act(self, screen = None):
+        pass
 
 
 
 
 
+# EnemyRobot is static and shoots periodically
+class EnemyRobot(Robot):
+    def __init__(self, start_position, angle, robot_image, robot_gun_image, firing_speed = 3000):
+        self.x, self.y = start_position
+        self.robot_image = robot_image
+        self.robot_gun_image = robot_gun_image
+        self.firing_speed = firing_speed
+        self.angle = angle
+        self.weapon_angle = angle
+        self.t = 0
+        self.colision = False
+        self.projectiles = []
+        self.vel = 0
+        self.vel_vector = [0, 0]
+
+    def move_robot(self):
+        self.movement_direction()
+
+    def act(self, screen):
+        self.shoot(screen)
 
 
-# examplary classes that extend the 'abstract' Robot class
-class BasicRobot(Robot):
+# PatrolRobot has a static path where it patrols, if player is detected it stop and starts shooting
+class PatrolRobot(Robot):
+    def __init__(self, start_position, max_velocity, rotation_velocity, acceleration,robot_image, robot_gun_image, xlim, ylim):
+        self.x, self.y = start_position
+        self.angle = 0
+        self.weapon_angle = 0
+        self.max_vel = max_velocity
+        self.rotation_vel = rotation_velocity
+        self.vel = 0
+        self.a = acceleration
+        self.vel_vector = [0, 0]
+        self.robot_image = robot_image
+        self.robot_gun_image = robot_gun_image
+        self.colision = False
+        self.projectiles = []
+        self.moving = True
+        self.xlim = xlim
+        self.ylim = ylim
+
+    def move_robot(self):
+        if self.moving:
+            self.move_forward()
+            if self.xlim[0] < self.x < self.xlim[1] or self.ylim[0] < self.y < self.ylim[1]:
+                self.angle = (self.angle + 180) % 360
+                self.weapon_angle = self.angle
+
+    def act(self, screen, pos):
+        width = 40  # width of image, FIXME
+        detection = False
+        if self.angle == 0:
+            detection = self.x < pos[0] < self.x + 100 and self.y - width/2 < pos[1] < self.y + width/2
+        elif self.angle == 180:
+            detection = self.x > pos[0] > self.x - 100 and self.y - width/2 < pos[1] < self.y + width/2
+        elif self.angle == 90:
+            detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y > pos[1] > self.y - 100
+        elif self.angle == 270: 
+            detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y < pos[1] < self.y + 100
+
+        if detection:
+            self.moving = False
+            self.shoot(screen)
+        else:
+            self.moving = True
+
+
+
+class BossRobot(Robot):
     pass
 
 class PlayerRobot(Robot):
-
-
       def move_robot(self):
           key = pygame.key.get_pressed()
           moving = False
@@ -143,8 +238,3 @@ class PlayerRobot(Robot):
 
           if not moving and self.vel < 0 and not slowing_down_with_space:
               self.deceleration_backward(1/2)
-
-
-class EnemyRobot(Robot):
-    pass
-
