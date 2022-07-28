@@ -7,8 +7,12 @@ import sys
 from map_utility import Map
 from movement_utility import rot_center
 
-from robot import PlayerRobot
+from robot import EnemyRobot, PlayerRobot
 from upload_effects import player_robot_img, player_gun_img, explosion_effect
+
+
+image_robot = pygame.image.load("images/robot.png")
+image_gun = pygame.image.load("images/Gun_01.png")
 
 
 class Game_window(Map):
@@ -24,11 +28,25 @@ class Game_window(Map):
         self.load_background(self.main_map)
         self.game()
 
+    def init_enemy_robots(self):
+        # init the enemy robots that are there from the start
+        e1 = EnemyRobot((110, 140), 180, image_robot, image_gun)
+        return [e1] 
+
+    def init_patrol_robots(self):
+        return []
+
     # the game loop
     def game(self):
         run = True
+
         player = PlayerRobot((100, 100), 2, 2, 0.02, self.image_robot_player, self.image_gun_player)  # create a player_robot
         counter = 0
+        enemies = self.init_enemy_robots()
+        patrols = self.init_patrol_robots()
+        passed = False
+        t = 0
+
         while run:
             counter %= 60
             self.close_event()
@@ -36,10 +54,27 @@ class Game_window(Map):
             player.colision_check_lava(self.lava_mask())
             player.colision_check_wall(self.wall_mask(), counter)
             player.move_robot()
+
+            # static enemy robots:
+            for bot in enemies:
+                if t > 3000:
+                    bot.act(self.screen)
+                    passed = True
+                bot.move_robot()
+                bot.draw_robot(self.screen)
+                bot.update_projectiles(self.screen)
+            if passed:
+                t = 0
+                passed = False
+            # patrol robots:
+            for bot in patrols:
+                bot.move_robot()
+                bot.draw_robot(self.screen)
+                bot.update_projectiles(self.screen)
+            dt = self.update_screen()
+            t += dt
+            
             player.draw(self.screen,counter)
-            self.update_screen()
-
             counter += 1
-
 
         pygame.quit()
