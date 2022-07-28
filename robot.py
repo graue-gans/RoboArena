@@ -64,18 +64,13 @@ class Robot(Screen):
 
 
 
-    #rotate the image of the robot and its weapon by using movement_utility.py functions
-    def draw_robot(self,win):
-        rotate_at_center(win, self.robot_image,(self.x, self.y),self.angle)
-        rotate_at_pos(win, self.robot_gun_image,(self.x + 20, self.y),self.weapon_angle)
-
     # rotate the image of the robot and its weapon by using movement_utility.py functions
     def draw(self, win, counter):
         if self.lava_collision_check and abs(self.vel) > 0:
             win.blit(rot_center(explosion_effect[counter//15], self.angle), (self.x-10, self.y-10)) #draw the explosion animation
 
         win.blit(rot_center(self.robot_image, self.angle), (self.x, self.y))
-       # win.blit(rot_center(self.robot_gun_image, self.angle), (self.x+38, self.y+25))
+        win.blit(rot_center(self.robot_gun_image, self.angle), (self.x+22, self.y+22))
 
 
 
@@ -122,7 +117,7 @@ class Robot(Screen):
 
 
     def shoot(self, screen, v = 6, filename = "images/default_projectile.jpg"):
-        p = Projectile(self.x + 38, self.y + 60, self.weapon_angle, v, filename)
+        p = Projectile(self.x + 38, self.y + 70, self.weapon_angle, v, filename)
         p.draw(screen)
         self.projectiles.append(p)
 
@@ -178,6 +173,9 @@ class EnemyRobot(Robot):
         self.projectiles = []
         self.vel = 0
         self.vel_vector = [0, 0]
+        self.explosion_counter = 0
+        self.lava_collision_check = False
+        self.wall_collision_check = False
 
     def move_robot(self):
         self.movement_direction()
@@ -190,8 +188,8 @@ class EnemyRobot(Robot):
 class PatrolRobot(Robot):
     def __init__(self, start_position, max_velocity, rotation_velocity, acceleration,robot_image, robot_gun_image, xlim, ylim):
         self.x, self.y = start_position
-        self.angle = 0
-        self.weapon_angle = 0
+        self.angle = 180
+        self.weapon_angle = 180
         self.max_vel = max_velocity
         self.rotation_vel = rotation_velocity
         self.vel = 0
@@ -199,11 +197,13 @@ class PatrolRobot(Robot):
         self.vel_vector = [0, 0]
         self.robot_image = robot_image
         self.robot_gun_image = robot_gun_image
-        self.colision = False
         self.projectiles = []
         self.moving = True
         self.xlim = xlim
         self.ylim = ylim
+        self.explosion_counter = 0
+        self.lava_collision_check = False
+        self.wall_collision_check = False
 
     def move_robot(self):
         if self.moving:
@@ -213,15 +213,15 @@ class PatrolRobot(Robot):
                 self.weapon_angle = self.angle
 
     def act(self, screen, pos):
-        width = 40  # width of image, FIXME
+        width = 100  # width of image, FIXME
         detection = False
-        if self.angle == 0:
+        if self.angle == 270:
             detection = self.x < pos[0] < self.x + 100 and self.y - width/2 < pos[1] < self.y + width/2
-        elif self.angle == 180:
-            detection = self.x > pos[0] > self.x - 100 and self.y - width/2 < pos[1] < self.y + width/2
         elif self.angle == 90:
+            detection = self.x > pos[0] > self.x - 100 and self.y - width/2 < pos[1] < self.y + width/2
+        elif self.angle == 0:
             detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y > pos[1] > self.y - 100
-        elif self.angle == 270: 
+        elif self.angle == 180: 
             detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y < pos[1] < self.y + 100
 
         if detection:
@@ -247,11 +247,11 @@ class PlayerRobot(Robot):
             pass
         # using elif to not allow the player using 2-keys 'w' and 's'
 
-        elif key[pygame.K_w]:
+        if key[pygame.K_w]:
             moving = True
             self.move_forward()
 
-        elif key[pygame.K_s]:
+        if key[pygame.K_s]:
             moving = True
             self.move_backward()
         # ------------------------------------------------------

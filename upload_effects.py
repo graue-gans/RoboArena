@@ -7,7 +7,7 @@ def scale_img(img,factor):
 
 
 player_robot_img = scale_img(pygame.image.load("images/tank/Hull_04.png"), 0.4)
-player_gun_img = scale_img(pygame.image.load("images/Weapon_Color_A/Gun_04.png"),0.5)
+player_gun_img = scale_img(pygame.image.load("images/Gun_01.png"),0.5)
 
 
 

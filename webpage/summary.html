@@ -1,5 +1,41 @@
 <h2>Project Summary</h2>
 
+Since the split we started our game from scratch. <br>
+<br>
+So we began with reimplementing what we already had before (<a href="../index.html">see weekly reports</a>) <br>
+Then the idea was to create a kind of rogue-like platform survival game but first we had to finish some more basics we had not done yet <br>
+<br>
+<h3>Tiles</h3>
+Since we did not yet do any work on visuals we started with creating three basic tiles <br>
+<img src="../tiles/lava.jpg" width="80" height="80"> <img src="../tiles/wall.jpg" width="80" height="80"> <img src="../tiles/stone.jpg" width="80" height="80">
+<br>
+and created a map editor for editing the underlying csv files ingame <br>
+<img src="map_editor.gif" width="600" height="611">
+
+<h3>Better movement and collision</h3>
+We smoothed out the movement motions and added collision detection. <br>
+Depending on the material of the tile the player collides with they are either slowed or bounced back <br>
+(which is minimal for stone but expandable for different materials in the future) <br>
+<img src="movement.gif" alt="">
+<img src="wall_collision.gif" alt="">
+<img src="lava_collision.gif" alt="">
+
+<h3>Enemies</h3>
+Right now there is a static robot which shoots periodically <br>
+and a patroling robot which stops and shoots if it detects the player in front of it <br>
+<img src="static_robot.gif" alt=""> <br>
+<img src="patrol_robot.gif" alt="patrol_robot.gif not found">
+
+
+<h2><a href="uml.png">UML diagram</a></h2>
+
+
+<h2>Possible Outlook</h2>
 <ul>
-    <li>asdf</li>
+    <li>More 'intelligent' enemies, e.g. bosses</li>
+    <li>More diverse levels with higher difficulties</li>
+    <li>Scoreboard or story progression</li>
+    <li>Custom images/animations for different robots and projectiles</li>
+    <li>Add collectable items</li>
+    <li>Local multiplayer</li>
 </ul>

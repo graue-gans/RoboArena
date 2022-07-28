@@ -7,7 +7,7 @@ import sys
 from map_utility import Map
 from movement_utility import rot_center
 
-from robot import EnemyRobot, PlayerRobot
+from robot import EnemyRobot, PatrolRobot, PlayerRobot
 from upload_effects import player_robot_img, player_gun_img, explosion_effect
 
 
@@ -30,11 +30,12 @@ class Game_window(Map):
 
     def init_enemy_robots(self):
         # init the enemy robots that are there from the start
-        e1 = EnemyRobot((110, 140), 180, image_robot, image_gun)
-        return [e1] 
+        # e1 = EnemyRobot((810, 140), 180, image_robot, image_gun)
+        return [] 
 
     def init_patrol_robots(self):
-        return []
+        p1 = PatrolRobot((810, 140), 2, 2, 0.02, image_robot, image_gun, (0, 1000), (0, 1000))
+        return [p1]
 
     # the game loop
     def game(self):
@@ -61,7 +62,7 @@ class Game_window(Map):
                     bot.act(self.screen)
                     passed = True
                 bot.move_robot()
-                bot.draw_robot(self.screen)
+                bot.draw(self.screen, counter)
                 bot.update_projectiles(self.screen)
             if passed:
                 t = 0
@@ -69,12 +70,14 @@ class Game_window(Map):
             # patrol robots:
             for bot in patrols:
                 bot.move_robot()
-                bot.draw_robot(self.screen)
+                bot.draw(self.screen, counter)
                 bot.update_projectiles(self.screen)
+
+            player.draw(self.screen,counter)
+            counter += 1
+
             dt = self.update_screen()
             t += dt
             
-            player.draw(self.screen,counter)
-            counter += 1
 
         pygame.quit()
