@@ -10,9 +10,6 @@ from robot import EnemyRobot, PlayerRobot
 image_robot = pygame.image.load("images/robot.png")
 image_gun = pygame.image.load("images/Gun_01.png")
 
-image_robot_player = pygame.image.load("images/robot.png")
-image_gun_player = pygame.image.load("images/Gun_01.png")
-
 
 class Game_window(Map):
     file = 'maps/background.csv'
