@@ -6,22 +6,23 @@ import pygame
 
 
 
-#rotate a image around it's center
-def rotate_at_center(window, image, pos, angle):
-    x,y = pos
-    rotated_image = pygame.transform.rotate(image, angle)
-    new_rect = rotated_image.get_rect(center=image.get_rect(topleft = pos).center)
-    window.blit(rotated_image, new_rect.topleft)
 
-#not owrking
-#rotate a image around a given position
-def rotate_at_pos(window, image, pos, angle):
-    x, y = pos
-    rotated_image = pygame.transform.rotate(image, angle)
-    window.blit(rotated_image, pos)
+#rotate a image around it's center
+def rot_center(image, angle):
+    """rotate an image while keeping its center and size"""
+    orig_rect = image.get_rect()
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = orig_rect.copy()
+    rot_rect.center = rot_image.get_rect().center
+    rot_image = rot_image.subsurface(rot_rect).copy()
+    return rot_image
+
 
 
 #add 2 given vectors
 def vector_addition(v1 , v2):
     return [v1[0] + v2[0] , v1[0] + v2[1]]
+
+
+
 
