@@ -29,8 +29,12 @@ class Custom_background(Map):
             tile = 1
         elif key[pygame.K_2]:
             tile = 2
-        elif key[pygame.K_0]:
-            tile = 0
+        elif key[pygame.K_3]:
+            tile = 3
+        elif key[pygame.K_4]:
+            tile = 4
+        elif key[pygame.K_5]:
+            tile = 5
         else:
             tile = 0
         if left_click:
@@ -46,6 +50,6 @@ class Custom_background(Map):
         while self.running_game:
             self.close_event()
             self.place_tile()
-            self.render_background(self.screen)
+            self.render_background(self.screen,255)
             self.save_background_csv(self.main_map)
             self.update_screen()
