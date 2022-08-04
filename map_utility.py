@@ -1,11 +1,15 @@
 import csv
+import math
+import random
+from random import randint
+
 import pygame
 from screen import Screen
 
 
 class Tileset:
     def __init__(self):
-        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/wall.jpg')]
+        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/wall.jpg'),self.load('tiles/water.png'),self.load('tiles/water2.png'),self.load('tiles/sand.png')]
 
     def load(self, filename):
         image = pygame.image.load(filename)
@@ -25,7 +29,6 @@ class Map(Screen):
         self.load_background(self.custom_map)
         self.init_transparent_screen()
 
-
     # load the csv file and create numeric background
     def load_background(self, file):
         self.background = []
@@ -35,12 +38,12 @@ class Map(Screen):
             self.background.append([int(x) for x in line])
 
     # draw all tiles by using draw_tile method for every tile
-    def render_background(self, screen):
+    def render_background(self, screen, counter):
         for i in range(self.vertical_tiles):
             for j in range(self.horizontal_tiles):
                 k = self.background[i][j]
-                if k >= 3: k = 2
                 tile = self.ts.tiles[k]
+                if k > 5: k = 5
                 screen.blit(tile, (j * self.tile_size, i * self.tile_size))
 
     # create a csv file and fill it with tiles; each number represent a tile
@@ -67,8 +70,12 @@ class Map(Screen):
         BLACK = (0, 0, 0)
         self.transparent_screen_lava = pygame.Surface((self.width, self.height))
         self.transparent_screen_wall = pygame.Surface((self.width, self.height))
-        self.transparent_screen_lava.set_colorkey((0,0,0))
+        self.transparent_screen_water = pygame.Surface((self.width, self.height))
+
+
+        self.transparent_screen_lava.set_colorkey(BLACK)
         self.transparent_screen_wall.set_colorkey(BLACK)
+        self.transparent_screen_water.set_colorkey(BLACK)
 
     # place the needed tiles on a trasparent screen
     def create_tile_mask(self, surface, tile_offset):
@@ -79,7 +86,6 @@ class Map(Screen):
                     surface.blit(tile, (j * self.tile_size, i * self.tile_size))
         return pygame.mask.from_surface(surface)
 
-
     # make a lava_mask
     def lava_mask(self):
         return self.create_tile_mask(self.transparent_screen_lava, 0)
@@ -88,4 +94,6 @@ class Map(Screen):
     def wall_mask(self):
         return self.create_tile_mask(self.transparent_screen_wall, 2)
 
-
+    #make a water_mask
+    def water_mask(self):
+        return self.create_tile_mask(self.transparent_screen_water, 4), self.transparent_screen_water.get_rect(topleft=(0,0))
