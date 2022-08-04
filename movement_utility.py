@@ -1,13 +1,12 @@
 import pygame
 
-#utility functions for the movement and roation
+
+# utility functions for the movement and roation
 #
 #
 
 
-
-
-#rotate a image around it's center
+# rotate a image around it's center
 def rot_center(image, angle):
     """rotate an image while keeping its center and size"""
     orig_rect = image.get_rect()
@@ -19,10 +18,10 @@ def rot_center(image, angle):
 
 
 
-#add 2 given vectors
-def vector_addition(v1 , v2):
-    return [v1[0] + v2[0] , v1[0] + v2[1]]
 
 
 
 
+# add 2 given vectors
+def vector_addition(v1, v2):
+    return [v1[0] + v2[0], v1[0] + v2[1]]
