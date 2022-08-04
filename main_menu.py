@@ -53,7 +53,7 @@ class Main_menu(Screen):
                 self.button_aktiv = True
                 # start the game, if play-button is pressed
                 if massage == "play":
-                    robo_arena = Game_window()
+                    robo_arena = Game_window("snow")
                 # create a map , if map-button is pressed
                 elif massage == "map":
                 # go to the setting window, if the setting-button is pressed
