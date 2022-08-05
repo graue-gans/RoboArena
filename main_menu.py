@@ -7,11 +7,13 @@ from screen import Screen
 
 
 class Main_menu(Screen):
+    pygame.font.init()
     font = pygame.font.SysFont('comic Sans MS', 20)
 
     def __init__(self):
-        self.start_main_menu()
         self.button_aktiv = False
+        self.start_main_menu()
+
 
     # main_menu infinit loop
     def start_main_menu(self):
