@@ -1,7 +1,4 @@
 import csv
-import math
-import random
-from random import randint
 
 import pygame
 from screen import Screen
@@ -9,7 +6,8 @@ from screen import Screen
 
 class Tileset:
     def __init__(self):
-        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/wall.jpg'),self.load('tiles/water.png'),self.load('tiles/water2.png'),self.load('tiles/sand.png')]
+        self.tiles = [self.load('tiles/lava.jpg'), self.load('tiles/stone.jpg'), self.load('tiles/wall.jpg'),
+                      self.load('tiles/water.png'), self.load('tiles/water2.png'), self.load('tiles/sand.png')]
 
     def load(self, filename):
         image = pygame.image.load(filename)
@@ -38,7 +36,7 @@ class Map(Screen):
             self.background.append([int(x) for x in line])
 
     # draw all tiles by using draw_tile method for every tile
-    def render_background(self, screen, counter):
+    def render_background(self, screen):
         for i in range(self.vertical_tiles):
             for j in range(self.horizontal_tiles):
                 k = self.background[i][j]
@@ -72,7 +70,6 @@ class Map(Screen):
         self.transparent_screen_wall = pygame.Surface((self.width, self.height))
         self.transparent_screen_water = pygame.Surface((self.width, self.height))
 
-
         self.transparent_screen_lava.set_colorkey(BLACK)
         self.transparent_screen_wall.set_colorkey(BLACK)
         self.transparent_screen_water.set_colorkey(BLACK)
@@ -94,6 +91,6 @@ class Map(Screen):
     def wall_mask(self):
         return self.create_tile_mask(self.transparent_screen_wall, 2)
 
-    #make a water_mask
+    # make a water_mask
     def water_mask(self):
         return self.create_tile_mask(self.transparent_screen_water, 4)
