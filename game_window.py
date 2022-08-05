@@ -21,7 +21,6 @@ class Game_window(Map):
         super().__init__()
         self.load_background(self.main_map)
         self.weather = weather
-        self.paused = True
         self.game()
 
     # the game loop
@@ -41,6 +40,8 @@ class Game_window(Map):
             counter %= 60
             counter += 1
             key = pygame.key.get_pressed()
+            if key[pygame.K_p]:
+                self.pausing()
             if key[pygame.K_ESCAPE]:
                 run = False
             self.render_background(self.screen)
@@ -58,6 +59,18 @@ class Game_window(Map):
                 for i in range(Snow.start_snow(len(snow))):
                     snow[i].show()
                     snow[i].update()
-
             self.update_screen()
-        pygame.quit()
+
+    def pausing(self):
+        run = True
+        while run:
+            self.close_event()
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE] or key[pygame.K_ESCAPE] :
+                run = False
+            pausing_info(self.screen,font1, "press p to pause, space to unpause  "
+                        "and press escape to go back to the menu",(255,255,255))
+
+            pygame.display.flip()
+
+
