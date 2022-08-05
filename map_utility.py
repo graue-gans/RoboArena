@@ -96,4 +96,4 @@ class Map(Screen):
 
     #make a water_mask
     def water_mask(self):
-        return self.create_tile_mask(self.transparent_screen_water, 4), self.transparent_screen_water.get_rect(topleft=(0,0))
+        return self.create_tile_mask(self.transparent_screen_water, 4)
