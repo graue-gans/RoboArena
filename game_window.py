@@ -1,6 +1,8 @@
+import sys
 
 import pygame
 
+from Game_Info import *
 from map_utility import Map
 
 from robot import PlayerRobot, Wall_Collision, Lava_Collision, Water_Collision
@@ -19,6 +21,7 @@ class Game_window(Map):
         super().__init__()
         self.load_background(self.main_map)
         self.weather = weather
+        self.paused = True
         self.game()
 
     # the game loop
@@ -34,10 +37,12 @@ class Game_window(Map):
         water_col = Water_Collision()
 
         while run:
+            self.close_event()
             counter %= 60
             counter += 1
-
-            self.close_event()
+            key = pygame.key.get_pressed()
+            if key[pygame.K_ESCAPE]:
+                run = False
             self.render_background(self.screen)
             wall_col.wall_Robot_collision(self.wall_mask(), player)
             lava_col.lava_Robot_collision(self.lava_mask(), player)
@@ -55,5 +60,4 @@ class Game_window(Map):
                     snow[i].update()
 
             self.update_screen()
-
         pygame.quit()
