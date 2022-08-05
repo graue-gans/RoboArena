@@ -2,7 +2,9 @@ import sys
 
 import pygame
 
-class Screen():
+
+class Screen:
+    pygame.init()
     width = 1000
     height = 1000
     screen = pygame.display.set_mode((width, height))
@@ -18,8 +20,10 @@ class Screen():
     #update the window every 1/60 second
     def update_screen(self):
         pygame.display.update()
-        dt = self.clock.tick(self.FPS)
-        return dt
+        self.clock.tick(self.FPS)
+
+ee
+
 
 
 
