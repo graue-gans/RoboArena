@@ -9,7 +9,8 @@ from movement_utility import rot_center, rot_center_gun
 from upload_effects import explosion_effect, player_robot_img, player_gun_img, top_left, top_right, bottom_left, \
     bottom_right
 
-
+class projectile():
+    pass
 
 class Robot:
     """
