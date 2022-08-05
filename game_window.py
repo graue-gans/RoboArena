@@ -1,14 +1,10 @@
-import csv
 
 import pygame
-import sys
 
 from map_utility import Map
 
-from movement_utility import rot_center
-
 from robot import PlayerRobot, Wall_Collision, Lava_Collision, Water_Collision
-from upload_effects import player_robot_img, player_gun_img, explosion_effect
+from upload_effects import player_robot_img, player_gun_img
 from weather import Rain, Snow
 
 
@@ -42,7 +38,7 @@ class Game_window(Map):
             counter += 1
 
             self.close_event()
-            self.render_background(self.screen, counter)
+            self.render_background(self.screen)
             wall_col.wall_Robot_collision(self.wall_mask(), player)
             lava_col.lava_Robot_collision(self.lava_mask(), player)
             water_col.water_Robot_collision(self.water_mask(), player)

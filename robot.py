@@ -9,6 +9,8 @@ from movement_utility import rot_center, rot_center_gun
 from upload_effects import explosion_effect, player_robot_img, player_gun_img, top_left, top_right, bottom_left, \
     bottom_right
 
+class projectile():
+    pass
 
 class Robot:
     """
@@ -180,17 +182,18 @@ class Wall_Collision(Collision):
     top_right_corner_collision = None
     bottom_left_corner_collision = None
     bottom_right_corner_collision = None
+    projectile_collision = False
 
     def wall_projectile_collision(self, wall_mask, projectile, x=0, y=0):
         projectile_mask = pygame.mask.from_surface(projectile.image)
-        offset = (int(projectile.x - x), int(projectile.x - y))
+        offset = (int(projectile.x - x), int(projectile.y - y))
         overlap_point = wall_mask.overlap(projectile_mask, offset)
         if overlap_point is not None:
-            self.col = True
+            self.projectile_collision = True
             # what should happen?
             pass
         else:
-            self.col = False
+            self.projectile_collision = False
 
     # check if there is a collision with the wall
     def wall_Robot_collision(self, wall_mask, robot, x=0, y=0):
