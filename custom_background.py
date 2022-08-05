@@ -1,5 +1,6 @@
 import pygame
 
+from Game_Info import *
 from map_utility import Map
 
 
@@ -45,8 +46,18 @@ class Custom_background(Map):
     def start(self):
 
         while self.running_game:
+            key = pygame.key.get_pressed()
             self.close_event()
             self.place_tile()
-            self.render_background(self.screen, 255)
+            self.render_background(self.screen)
             self.save_background_csv(self.main_map)
+            if key[pygame.K_SPACE]:
+                custom_background_Info(self.screen, font1,
+                                       ["lava: press: 0", "stone: press 1", "wall: press 2"
+                                           , "water: press 3", "water2: press 4", "sand: press 5"], (255, 255, 255))
+            else:
+                custom_background_massage(self.screen, font1, "Press 'Espace' to show Tiles ", (255, 255, 255))
+            if key[pygame.K_ESCAPE]:
+                self.running_game = False
+
             self.update_screen()
