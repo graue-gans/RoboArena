@@ -22,7 +22,7 @@ class Screen:
         pygame.display.update()
         self.clock.tick(self.FPS)
 
-ee
+
 
 
 
