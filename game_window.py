@@ -7,7 +7,7 @@ from map_utility import Map
 
 from movement_utility import rot_center
 
-from robot import PlayerRobot
+from robot import PlayerRobot, Wall_Collision, Lava_Collision, Water_Collision
 from upload_effects import player_robot_img, player_gun_img, explosion_effect
 from weather import Rain, Snow
 
@@ -28,25 +28,26 @@ class Game_window(Map):
     # the game loop
     def game(self):
         run = True
-        player = PlayerRobot((200, 200), 2, 2, 0.02)  # create a player_robot
+        player = PlayerRobot((200, 200), 2, 2, 0.02, player_robot_img, player_gun_img)  # create a player_robot
         counter = 0
         rain = [Rain() for i in range(300)]
         snow = [Snow() for i in range(300)]
+
+        wall_col = Wall_Collision()
+        lava_col = Lava_Collision()
+        water_col = Water_Collision()
+
         while run:
             counter %= 60
             counter += 1
 
             self.close_event()
-            self.render_background(self.screen,counter)
-
-            player.check_wall_collision(self.wall_mask())
-
-
-            player.move_robot()
-
-            player.draw(self.screen, counter)
-            player.check_water_collision(self.water_mask()[0], self.water_mask()[1], self.screen)
-            player.check_lava_collision(self.lava_mask(), self.screen, counter)
+            self.render_background(self.screen, counter)
+            wall_col.wall_Robot_collision(self.wall_mask(), player)
+            lava_col.lava_Robot_collision(self.lava_mask(), player)
+            water_col.water_Robot_collision(self.water_mask(), player)
+            player.move_robot(wall_col)
+            player.draw(self.screen, counter, player, lava_col, water_col)
 
             if self.weather == "rain":
                 for i in range(Rain.start_rain(len(rain))):
@@ -56,7 +57,6 @@ class Game_window(Map):
                 for i in range(Snow.start_snow(len(snow))):
                     snow[i].show()
                     snow[i].update()
-
 
             self.update_screen()
 
