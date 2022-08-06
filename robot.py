@@ -485,7 +485,7 @@ class PatrolRobot(Robot):
 
 
 class BossRobot(Robot):
-    def __init__(self, start_position, angle, max_velocity, acceleration, robo_image, robo_gun_image, bg, player_pos):
+    def __init__(self, start_position, angle, max_velocity, acceleration, robo_image, bg, player_pos):
         self.x, self.y = start_position
         self.angle = angle
         self.old_angle = angle
@@ -495,7 +495,6 @@ class BossRobot(Robot):
         self.vel_vector = [0, 0]
         # look at upload_effects.py to upload new images
         self.robot_image = robo_image
-        self.robot_gun_image = robo_gun_image
         self.projectiles = []
         self.grid = None
         self.edges = []
@@ -585,7 +584,7 @@ class BossRobot(Robot):
                             x = j + b
                             if x < 0 or y < 0 or x >= m or y >= n: continue
                             else: 
-                                if self.map[i + a][j + b] != 0: self.map[i + a][j + b] = 100
+                                if self.map[i + a][j + b] != 0: self.map[i + a][j + b] = 1000
 
     def create_grid(self, map):
         self.grid = Grid(matrix = map)
@@ -618,5 +617,11 @@ class BossRobot(Robot):
         win.blit(pygame.transform.rotate(self.robot_image, 0), (self.x, self.y))
 
         # draw a new surface of the robot under the water, it sould be drawn after the robot
-        if water_col.col:
+        if water_col.col:   
             win.blit(water_col.under_water_surf, (self.x, self.y))
+
+    def shoot(self, screen, v = 6, filename = "images/default_projectile.png", angle = None):
+        if angle is None: angle = self.angle
+        p = Projectile(self.x + 30, self.y + 30, angle, v, filename)  # FIXME projectile offset
+        p.draw(screen)
+        self.projectiles.append(p)

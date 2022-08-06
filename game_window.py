@@ -8,7 +8,7 @@ from upload_effects import player_robot_img, player_gun_img
 from weather import Rain, Snow
 
 # for debugging
-image_robot = pygame.image.load("images/robot.png")
+image_robot = pygame.image.load("images/boss.png")
 image_gun = pygame.image.load("images/Gun_01.png")
 # end debugging
 
@@ -35,7 +35,7 @@ class Game_window(Map):
         return []
 
     def init_boss_robots(self):
-        b1 = BossRobot((810, 180), 180, 2, 0.02, image_robot, image_gun, self.background, (200, 200))
+        b1 = BossRobot((810, 180), 180, 2, 0.02, image_robot, self.background, (200, 200))
         return [b1]
 
     # the game loop
