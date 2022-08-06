@@ -75,12 +75,11 @@ class Main_menu(Screen):
         text_k, text_rect = self.textObjekt(massage, self.font,(200,200,200))
         text_rect.center = ((x + (width / 2)), (y + (height / 2)))
         self.screen.blit(text_k, text_rect)
-        
     #logo of the game
     def robo_arena_logo(self,win):
         text,text_rect = self.textObjekt("Robo Arena", font3,(200,200,200))
         win.blit(text,((self.width / 2) - text.get_width()/2, 100))
-
+        
     #a methode to choose the weather for the map
     def chooseWeather(self):
         run = True

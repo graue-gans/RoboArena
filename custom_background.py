@@ -50,7 +50,6 @@ class Custom_background(Map):
             self.close_event()
             self.place_tile()
             self.render_background(self.screen)
-            self.save_background_csv(self.main_map)
             if key[pygame.K_SPACE]:
                 custom_background_Info(self.screen, font1,
                                        ["lava: press: 0", "stone: press 1", "wall: press 2"
@@ -59,5 +58,6 @@ class Custom_background(Map):
                 custom_background_massage(self.screen, font1, "Press 'Espace' to show Tiles ", (255, 255, 255))
             if key[pygame.K_ESCAPE]:
                 self.running_game = False
+                self.save_background_csv(self.main_map)
 
             self.update_screen()
