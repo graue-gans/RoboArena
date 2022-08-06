@@ -20,7 +20,7 @@ class Screen:
     #update the window every 1/60 second
     def update_screen(self):
         pygame.display.update()
-        self.clock.tick(self.FPS)
+        return self.clock.tick(self.FPS)
 
 
 
