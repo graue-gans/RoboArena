@@ -5,7 +5,8 @@ import pygame
 from Game_Info import *
 from map_utility import Map
 
-from robot import BossRobot, PatrolRobot, PlayerRobot, StaticRobot, Wall_Collision, Lava_Collision, Water_Collision
+from robot import BossRobot, PatrolRobot, PlayerRobot, StaticRobot, Wall_Collision, Lava_Collision, Water_Collision, \
+    Robot_Projectile_Collision
 from upload_effects import player_robot_img, player_gun_img
 from weather import Rain, Snow
 
@@ -29,12 +30,12 @@ class Game_window(Map):
         self.game()
 
     def init_static_robots(self):
-        e1 = StaticRobot((810, 140), 180, image_robot, image_gun)
-        return []
+        e1 = StaticRobot((40, 810), 0, image_robot, image_gun)
+        return [e1]
 
     def init_patrol_robots(self):
-        p1 = PatrolRobot((810, 140), 180, 2, 2, 0.02, image_robot, image_gun, (0, 1000), (100, 500))
-        return []
+        p1 = PatrolRobot((910, 810), 0, 2, 2, 0.02, image_robot, image_gun, (0, 1000), (400, 900))
+        return [p1]
 
     def init_boss_robots(self):
         b1 = BossRobot((810, 180), 180, 2, 0.02, image_robot, self.background, (200, 200))
@@ -60,6 +61,8 @@ class Game_window(Map):
         wall_col = Wall_Collision()
         lava_col = Lava_Collision()
         water_col = Water_Collision()
+
+        p_col = Robot_Projectile_Collision()
 
         while run:
             self.close_event()
@@ -113,6 +116,10 @@ class Game_window(Map):
                 bot.move_robot()
                 bot.draw(self.screen, counter, bot, lava_col, water_col)
                 bot.update_projectiles(self.screen)
+
+                for i in range(len(bot.projectiles)):
+                    p_col.robot_projectile_collision(bot.projectiles[i], player)
+
             if t3 > 1000:
                 t3 = 0
 

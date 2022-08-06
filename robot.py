@@ -129,6 +129,8 @@ class Collision():
 
 
 class Robot_Projectile_Collision(Collision):
+    counter = 0
+
     def robot_projectile_collision(self, projectile, robot):
         self.col = False
         robot_img = rot_center(robot.robot_image, robot.angle)
@@ -137,14 +139,17 @@ class Robot_Projectile_Collision(Collision):
         # make masks
         robot_mask = pygame.mask.from_surface(robot_img)
         projectile_mask = pygame.mask.from_surface(projectile_img)
-        #offset
+        # offset
         offset = (int(projectile.x - robot.x), int(projectile.y - robot.y))
-        #overlap point
+        # overlap point
         overlap_projectile_robot = robot_mask.overlap_area(projectile_mask, offset)
 
         if overlap_projectile_robot is not None:
             self.col = True
-            # FIXME subtract health points and check if player died
+            if self.counter >= 1000:
+                print("verloren")
+
+            self.counter += 1
         else:
             self.col = False
 
