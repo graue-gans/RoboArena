@@ -40,9 +40,9 @@ class Game_window(Map):
             counter %= 60
             counter += 1
             key = pygame.key.get_pressed()
-            if key[pygame.K_p]:
+            if key[pygame.K_p]: #pausing the game by pressing p
                 self.pausing()
-            if key[pygame.K_ESCAPE]:
+            if key[pygame.K_ESCAPE]:# back to the manu by pressing Escape
                 run = False
             self.render_background(self.screen)
             wall_col.wall_Robot_collision(self.wall_mask(), player)
@@ -66,7 +66,7 @@ class Game_window(Map):
         while run:
             self.close_event()
             key = pygame.key.get_pressed()
-            if key[pygame.K_SPACE] or key[pygame.K_ESCAPE] :
+            if key[pygame.K_SPACE] or key[pygame.K_ESCAPE] : # press space to unpause and Escape to go to the manu
                 run = False
             pausing_info(self.screen,font1, "press p to pause, space to unpause  "
                         "and press escape to go back to the menu",(255,255,255))
