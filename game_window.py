@@ -79,6 +79,7 @@ class Game_window(Map):
 
             # static robots:
             for bot in statics:
+                wall_col.wall_Robot_collision(self.wall_mask(), bot)
                 lava_col.lava_Robot_collision(self.lava_mask(), bot)
                 water_col.water_Robot_collision(self.water_mask(), bot)
                 if t1 > bot.firing_speed:
@@ -93,6 +94,7 @@ class Game_window(Map):
 
             # patrol robots:
             for bot in patrols:
+                wall_col.wall_Robot_collision(self.wall_mask(), bot)
                 lava_col.lava_Robot_collision(self.lava_mask(), bot)
                 water_col.water_Robot_collision(self.water_mask(), bot)
                 bot.act(self.screen, (player.x, player.y), t2 > 1500)
@@ -104,6 +106,7 @@ class Game_window(Map):
 
             # boss robots:
             for bot in bosses:
+                wall_col.wall_Robot_collision(self.wall_mask(), bot)
                 lava_col.lava_Robot_collision(self.lava_mask(), bot)
                 water_col.water_Robot_collision(self.water_mask(), bot)
                 bot.act(self.screen, (player.x, player.y), flag=False, shooting=t3 > 1000)

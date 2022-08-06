@@ -131,7 +131,7 @@ class Collision():
 class Robot_Projectile_Collision(Collision):
     def robot_projectile_collision(self, projectile, robot):
         self.col = False
-        """robot_img = rot_center(robot.robot_image, robot.angle)
+        robot_img = rot_center(robot.robot_image, robot.angle)
         projectile_img = projectile.img
 
         # make masks
@@ -146,7 +146,7 @@ class Robot_Projectile_Collision(Collision):
             self.col = True
             # FIXME subtract health points and check if player died
         else:
-            self.col = False"""
+            self.col = False
 
 
 class Water_Collision(Collision):
@@ -159,7 +159,7 @@ class Water_Collision(Collision):
     # detect if there is a collision with the water
     def water_Robot_collision(self, water_mask, robot):
         self.col = False
-        """
+        
         robot_img = rot_center(robot.robot_image, robot.angle)
 
         robo_mask = pygame.mask.from_surface(robot_img)
@@ -189,7 +189,7 @@ class Water_Collision(Collision):
                     if self.under_water_surf.get_at((x, y))[0] != 0:
                         self.under_water_surf.set_at((x, y), 'blue')
         else:
-            self.col = False"""
+            self.col = False
 
 
 class Lava_Collision(Collision):
@@ -197,9 +197,9 @@ class Lava_Collision(Collision):
 
     def lava_Robot_collision(self, lava_mask, robot, x=0, y=0):
         self.col = False
-    """lava_vel = 1
+        lava_vel = 1
     # a flag to know if the whole body of the robot is on the lavatiles
-    full_on_lava = False
+        full_on_lava = False
 
     # check if there is a collision between a robot and lava
     def lava_Robot_collision(self, lava_mask, robot, x=0, y=0):
@@ -219,7 +219,7 @@ class Lava_Collision(Collision):
             self.col = True
             robot.vel = robot.vel / 1.03  # slow down
         else:
-            self.col = False"""
+            self.col = False
 
 
 class Wall_Collision(Collision):
@@ -232,7 +232,7 @@ class Wall_Collision(Collision):
     projectile_collision = False
 
     def wall_projectile_collision(self, wall_mask, projectile, x=0, y=0):
-        """projectile_mask = pygame.mask.from_surface(projectile.image)
+        projectile_mask = pygame.mask.from_surface(projectile.image)
         offset = (int(projectile.x - x), int(projectile.y - y))
         overlap_point = wall_mask.overlap(projectile_mask, offset)
         if overlap_point is not None:
@@ -240,13 +240,11 @@ class Wall_Collision(Collision):
             # what should happen?
             pass
         else:
-            self.projectile_collision = False"""
-        pass
+            self.projectile_collision = False
 
     # check if there is a collision with the wall
     def wall_Robot_collision(self, wall_mask, robot, x=0, y=0):
-        pass
-        """offset = (int(robot.x - x), int(robot.y - y))
+        offset = (int(robot.x - x), int(robot.y - y))
         # create a robot mask to check if there is collision between robot and the wall
         robot_mask = pygame.mask.from_surface(rot_center(robot.robot_image, robot.angle))
         poi = wall_mask.overlap(robot_mask, offset)
@@ -257,12 +255,11 @@ class Wall_Collision(Collision):
         self.bottom_right_corner_collision = wall_mask.overlap(self.roboter_corner_mask(robot)[3], offset)
         # what to do if  there is collision with the wall
         if poi is not None:
-            self.wall_collision(robot)"""
+            self.wall_collision(robot)
 
     # what to do if there is a collision with the wall
     def wall_collision(self, robot):
-        pass
-        """if self.top_left_corner_collision is not None and self.top_right_corner_collision is not None:
+        if self.top_left_corner_collision is not None and self.top_right_corner_collision is not None:
             if robot.vel > 0:
                 robot.vel = -robot.vel / 2
 
@@ -290,21 +287,19 @@ class Wall_Collision(Collision):
                 self.colide_counter_clock_wise(robot)
             else:
                 if robot.vel < 0:
-                    robot.vel = -robot.vel / 2"""
+                    robot.vel = -robot.vel / 2
 
     # create the 4 masks for each corner and return them in a list
     def roboter_corner_mask(self, robot):
-        pass
-        """top_left_mask = pygame.mask.from_surface(rot_center(top_left, robot.angle))
+        top_left_mask = pygame.mask.from_surface(rot_center(top_left, robot.angle))
         top_right_mask = pygame.mask.from_surface(rot_center(top_right, robot.angle))
         bottom_left_mask = pygame.mask.from_surface(rot_center(bottom_left, robot.angle))
         bottom_right_mask = pygame.mask.from_surface(rot_center(bottom_right, robot.angle))
-        return [top_left_mask, top_right_mask, bottom_left_mask, bottom_right_mask]"""
+        return [top_left_mask, top_right_mask, bottom_left_mask, bottom_right_mask]
 
     # detects based on the angle and the collison-corner which wall the robot is collision with: left right top or bottom
     def wall_detection(self, robot):
-        pass
-        """angle = robot.angle % 360
+        angle = robot.angle % 360
         wall_left = False
         wall_right = False
         wall_bottom = False
@@ -324,13 +319,12 @@ class Wall_Collision(Collision):
             if (90 < angle <= 180 and self.top_left_corner_collision is not None) or (
                     180 <= angle < 270 and self.top_right_corner_collision is not None):
                 wall_bottom = True
-        return [wall_left, wall_top, wall_right, wall_bottom]"""
+        return [wall_left, wall_top, wall_right, wall_bottom]
 
     # utility function for check_wall_collision
     # the direction of the movement after the collision with the wall with given angle -> in clock direction
     def colide_clock_wise(self, robot):
-        pass
-        """clide_rotation_vel = robot.vel
+        clide_rotation_vel = robot.vel
         bounce = robot.vel
         if self.wall_detection(robot)[0]:
             robot.angle -= clide_rotation_vel
@@ -343,13 +337,12 @@ class Wall_Collision(Collision):
             robot.x -= bounce
         if self.wall_detection(robot)[3]:
             robot.angle -= clide_rotation_vel
-            robot.y -= bounce"""
+            robot.y -= bounce
 
     # utility function for check_wall_collision
     # the direction of the movement after the collision with the wall with given angle -> in counter clock direction
     def colide_counter_clock_wise(self, robot):
-        pass
-        """clide_rotation_vel = robot.vel
+        clide_rotation_vel = robot.vel
         bounce = robot.vel
         if self.wall_detection(robot)[0]:
             robot.angle += clide_rotation_vel
@@ -362,7 +355,7 @@ class Wall_Collision(Collision):
             robot.x -= bounce
         if self.wall_detection(robot)[3]:
             robot.angle += clide_rotation_vel
-            robot.y -= bounce"""
+            robot.y -= bounce
 
 
 class PlayerRobot(Robot):
