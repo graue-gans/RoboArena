@@ -6,6 +6,7 @@ from map_utility import Tileset
 pygame.font.init()
 font1 = pygame.font.SysFont('Comic Sans MS', 20)
 font2 = pygame.font.SysFont('Comic Sans MS', 30)
+font3 = pygame.font.SysFont('Comic Sans MS', 50)
 
 ts = Tileset()
 
