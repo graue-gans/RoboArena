@@ -21,10 +21,4 @@ class Screen:
     def update_screen(self):
         pygame.display.update()
         return self.clock.tick(self.FPS)
-
-
-
-
-
-
-
+        

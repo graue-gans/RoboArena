@@ -577,7 +577,7 @@ class BossRobot(Robot):
                             x = j + b
                             if x < 0 or y < 0 or x >= m or y >= n: continue
                             else: 
-                                if self.map[i + a][j + b] != 0: self.map[i + a][j + b] = 1000
+                                if self.map[i + a][j + b] != 0: self.map[i + a][j + b] = 0
 
     def create_grid(self, map):
         self.grid = Grid(matrix = map)
