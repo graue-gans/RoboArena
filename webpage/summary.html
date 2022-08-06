@@ -12,6 +12,72 @@ Since we did not yet do any work on visuals we started with creating three basic
 and created a map editor for editing the underlying csv files ingame <br>
 <img src="map_editor.gif" width="600" height="611">
 
+<h2>How to save/load the background and render it?</h2>
+we used a 2dimensional list which countains all tileindexes, to save/load this list we use a csv-file<br>
+based on the index of a tile we draw a tile at the given position of the tile on the screen so we render the background.<br>
+
+
+
+<h2>Main Manu</h2>
+....
+
+<h2>Custom Background</h2>
+We imlemented a map editor for editing the underlying csv files ingame<br>
+<img src="new_custom_map.gif" width="600" height="611">
+
+<br>
+<h2>Collision</h2>
+<h4>How do we check for the collisions?</h4>
+To do the collisions we have to create masks of all surfaces which we want to check the collision from
+<h4>Tile Masks</h4>
+To create a Mask for a tile, we need to create a transparent screen for each tile then we can place <br>
+the tile on this transparent screen. After that we have to create a new suface of this screen, since we have this<br>
+surface we can build a mask of it. when we build a mask, we give each pixel of this surface a 0,1 value, any traparent<br>
+pixel will get 0 and the rest would get the 1.<br>
+<h4>Robot Mask</h4>
+To build a mask for the robot or projectile we just need to build the mask <br>
+from its surface.<br>
+<h4>Collision Check</h4>
+To check for the collision we can check if there is an overlap between<br>
+none transparent pixel of two masks. We can also check for the area of the collision so we know how many bits<br>
+are colliding.<br>
+
+<h4>Sea</h4>
+We check a area for the collision of the robot with the sea, so when we the whole body of the robot is in the sea, the <br>
+the flag for collision will be set<br>
+To have a other surface since the robot is under water we have to create a mask between the collision of masks of the robot and the sea<br>
+we we have collision we draw this surface on the robot so it seems like the robot is under water.<br>
+
+
+<img src="new_water_collision.gif" width="600" height="611"><br>
+<h4>Lava</h4>
+we check a area for the collision of the robot with the lava, if we have a collision with 200 set bits, the robot would be slower<br>
+if the robot is complately in the lava it would be more slower.<br>
+<img src="new_lava_collision.gif" width="600" height="611">
+
+
+<h4> Wall </h4>
+the check of the collision between a wall mask and the robot is more complicated because we want to implement a realistic collision.<br>
+To do that we have to know exactly which corner of the robot is colliding with the wall. So we create 4 surfaces of the 4 corner and build<br>
+masks of it.<br>
+<img src="../images/tank_player/collision_check/top_left.png" width="150" height="200">
+<img src="../images/tank_player/collision_check/top_right.png" width="150" height="200">
+<br>
+<img src="../images/tank_player/collision_check/bottom_left.png" width="150" height="200">
+<img src="../images/tank_player/collision_check/bottom_right.png" width="150" height="200">
+<br>
+now we just have to know where the wall is and what the current angle is so we can create a realistic collision.
+<br>
+<img src="new_wall_collision.gif" width="600" height="611">
+ 
+
+<br>
+
+
+
+
+
+
 <h3>Better movement and collision</h3>
 We smoothed out the movement motions and added collision detection. <br>
 Depending on the material of the tile the player collides with they are either slowed or bounced back <br>

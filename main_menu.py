@@ -1,18 +1,20 @@
 import pygame
 import sys
 
+from Game_Info import font3
 from custom_background import Custom_background
 from game_window import Game_window
 from screen import Screen
 
 
 class Main_menu(Screen):
-    pygame.init()
+    pygame.font.init()
     font = pygame.font.SysFont('comic Sans MS', 20)
 
     def __init__(self):
-        self.start_main_menu()
         self.button_aktiv = False
+        self.start_main_menu()
+
 
     # main_menu infinit loop
     def start_main_menu(self):
@@ -22,18 +24,18 @@ class Main_menu(Screen):
             self.click = pygame.mouse.get_pressed()
             self.screen.fill((0, 0, 0))  # fill the screen with black
             self.mouse = pygame.mouse.get_pos()
+            self.robo_arena_logo(self.screen)
             # inputs:
             # position x , position y, button width, button_height, rgb-color-inactive,rgb-color active, text-on-button
             self.button(350, 500, 300, 80, (127, 125, 125), (255, 255, 255), "play")
             self.button(350, 600, 300, 80, (127, 125, 125), (255, 255, 255), "map")
-            self.button(350, 700, 300, 80, (127, 125, 125), (255, 255, 255), "setting")
-            self.button(350, 800, 300, 80, (127, 125, 125), (255, 255, 255), "exit")
+            self.button(350, 700, 300, 80, (127, 125, 125), (255, 255, 255), "exit")
             self.update_screen()
         pygame.quit()
 
     # create a text with given font and the textarea
-    def textObjekt(self, text, font):
-        text_rect = font.render(text, True, (100, 100, 0))
+    def textObjekt(self, text, font,rgb):
+        text_rect = font.render(text, True, rgb)
         return text_rect, text_rect.get_rect()
 
     # create the buttons with a text on it
@@ -48,16 +50,20 @@ class Main_menu(Screen):
                 self.button_aktiv = True
                 # start the game, if play-button is pressed
                 if massage == "play":
-                    robo_arena = Game_window("snow")
+                    self.chooseWeather()
                 # create a map , if map-button is pressed
                 elif massage == "map":
                     # go to the setting window, if the setting-button is pressed
                     c_b_1 = Custom_background()
-                elif massage == "setting":
-                    sys.exit()  # repace it with a setting window
                 # and quit when exit-button is pressed
                 elif massage == "exit":
                     sys.exit()
+                elif massage == "rain":
+                    # go to the setting window, if the setting-button is pressed
+                    robo_arena = Game_window("rain")
+                # and quit when exit-button is pressed
+                elif massage == "snow":
+                    robo_arena = Game_window("snow")
             # if the mouse is over a button but not pressed so it will stay inactive
             if self.click[0] == 0:
                 self.button_aktiv = False
@@ -66,6 +72,30 @@ class Main_menu(Screen):
         else:
             pygame.draw.rect(self.screen, color_in_active, (x, y, width, height))
         # every button should have a centered text anyway
-        text_k, text_rect = self.textObjekt(massage, self.font)
+        text_k, text_rect = self.textObjekt(massage, self.font,(200,200,200))
         text_rect.center = ((x + (width / 2)), (y + (height / 2)))
         self.screen.blit(text_k, text_rect)
+    #logo of the game
+    def robo_arena_logo(self,win):
+        text,text_rect = self.textObjekt("Robo Arena", font3,(200,200,200))
+        win.blit(text,((self.width / 2) - text.get_width()/2, 100))
+        
+    #a methode to choose the weather for the map
+    def chooseWeather(self):
+        run = True
+        while run :
+            self.close_event()
+            self.click = pygame.mouse.get_pressed()
+            self.screen.fill((0, 0, 0))  # fill the screen with black
+            self.mouse = pygame.mouse.get_pos()
+            self.robo_arena_logo(self.screen)
+            key = pygame.key.get_pressed()
+            if key[pygame.K_ESCAPE]:  # back to the main manue by pressing Escape
+                run = False
+            self.button(350, 500, 300, 80, (127, 125, 125), (255, 255, 255), "snow")
+            self.button(350, 600, 300, 80, (127, 125, 125), (255, 255, 255), "rain")
+
+            self.update_screen()
+
+
+

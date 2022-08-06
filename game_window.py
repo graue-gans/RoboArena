@@ -1,6 +1,8 @@
+import sys
 
 import pygame
 
+from Game_Info import *
 from map_utility import Map
 
 from robot import BossRobot, PatrolRobot, PlayerRobot, StaticRobot, Wall_Collision, Lava_Collision, Water_Collision
@@ -60,10 +62,14 @@ class Game_window(Map):
         water_col = Water_Collision()
 
         while run:
+            self.close_event()
             counter %= 60
             counter += 1
-
-            self.close_event()
+            key = pygame.key.get_pressed()
+            if key[pygame.K_p]: #pausing the game by pressing p
+                self.pausing()
+            if key[pygame.K_ESCAPE]:# back to the manu by pressing Escape
+                run = False
             self.render_background(self.screen)
             wall_col.wall_Robot_collision(self.wall_mask(), player)
             lava_col.lava_Robot_collision(self.lava_mask(), player)
@@ -121,4 +127,16 @@ class Game_window(Map):
             t2 += dt
             t3 += dt
 
-        pygame.quit()
+    def pausing(self):
+        run = True
+        while run:
+            self.close_event()
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE] or key[pygame.K_ESCAPE] : # press space to unpause and Escape to go to the manu
+                run = False
+            pausing_info(self.screen,font1, "press p to pause, space to unpause  "
+                        "and press escape to go back to the menu",(255,255,255))
+
+            pygame.display.flip()
+
+
