@@ -1,6 +1,7 @@
 import sys
 
 import pygame
+import time
 
 from Game_Info import *
 from map_utility import Map
@@ -60,6 +61,7 @@ class Game_window(Map):
         t1 = 0
         t2 = 0
         t3 = 0
+        last_shot_time = 0
 
 
         wall_col = Wall_Collision()
@@ -81,7 +83,6 @@ class Game_window(Map):
 
             self.render_background(self.screen)
             show_life_player(player_life_image, self.screen, player)
-
             show_life_enemy(enemy_life_image, self.screen, statics)
             show_life_enemy(enemy_life_image, self.screen, patrols)
             show_life_enemy(enemy_life_image, self.screen, bosses)
@@ -99,8 +100,12 @@ class Game_window(Map):
             water_col.water_Robot_collision(self.water_mask(), player)
             player.move_robot(wall_col)
 
-            if key[pygame.K_f]:  # shoot with f
+
+
+            if key[pygame.K_f] and last_shot_time + 1000 <= time.time()*1000.0 :  # shoot with f
                 player.shoot(self.screen)
+                last_shot_time = time.time()*1000.0
+
 
             player.update_projectiles(self.screen)
             player.draw(self.screen, counter, lava_col, water_col)
@@ -176,10 +181,12 @@ class Game_window(Map):
                     snow[i].show()
                     snow[i].update()
 
+
             dt = self.update_screen()
             t1 += dt
             t2 += dt
             t3 += dt
+
     #pause the game
     def pausing(self):
         run = True
