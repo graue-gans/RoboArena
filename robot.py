@@ -25,10 +25,10 @@ class Projectile():
         self.img = pygame.image.load(filename)
 
     def vec_mult(self, vec, c):
-        return (vec[0]*c, vec[1]*c)
+        return (vec[0] * c, vec[1] * c)
 
     def draw(self, screen):
-        screen.blit(self.img, self.img.get_rect(center = (self.x, self.y)))
+        screen.blit(self.img, self.img.get_rect(center=(self.x, self.y)))
 
     def move(self):
         self.x -= self.dir[0]
@@ -53,6 +53,7 @@ class Robot:
         self.robot_image = robo_image
         self.robot_gun_image = robo_gun_image
         self.projectiles = []
+        self.life = 10
 
     # rotate the robot by adjusting the robot_angle
     def rotate_robot(self, wall_col, left=False, right=False):
@@ -63,10 +64,10 @@ class Robot:
         # self.angle %= 360 missing ?
 
     # rotate the image of the robot and its weapon by using movement_utility.py functions
-    def draw(self, win, counter, robot, l_col, water_col):
+    def draw(self, win, counter, l_col, water_col):
         if l_col.col:
-            win.blit(rot_center(explosion_effect[counter // 16], robot.angle),
-                     (robot.x - 14, robot.y - 10))  # draw the explosion animation
+            win.blit(rot_center(explosion_effect[counter // 16], self.angle),
+                     (self.x - 14, self.y - 10))  # draw the explosion animation
 
         win.blit(rot_center(self.robot_image, self.angle), (self.x, self.y))
 
@@ -105,7 +106,7 @@ class Robot:
         self.movement_direction()
 
     # shoot projectiles
-    def shoot(self, screen, v = 6, filename = "images/default_projectile.png", angle = None):
+    def shoot(self, screen, v=6, filename="images/default_projectile.png", angle=None):
         if angle is None: angle = self.angle
         p = Projectile(self.x + 38, self.y + 70, angle, v, filename)  # FIXME projectile offset
         p.draw(screen)
@@ -118,7 +119,7 @@ class Robot:
             p.draw(screen)
 
     # undefined act method for safety
-    def act(self, screen = None):
+    def act(self, screen=None):
         pass
 
 
@@ -129,10 +130,8 @@ class Collision():
 
 
 class Robot_Projectile_Collision(Collision):
-    counter = 0
 
     def robot_projectile_collision(self, projectile, robot):
-        self.col = False
         robot_img = rot_center(robot.robot_image, robot.angle)
         projectile_img = projectile.img
 
@@ -142,16 +141,27 @@ class Robot_Projectile_Collision(Collision):
         # offset
         offset = (int(projectile.x - robot.x), int(projectile.y - robot.y))
         # overlap point
-        overlap_projectile_robot = robot_mask.overlap_area(projectile_mask, offset)
+        overlap_projectile_robot = robot_mask.overlap(projectile_mask, offset)
 
         if overlap_projectile_robot is not None:
-            self.col = True
-            if self.counter >= 1000:
-                print("verloren")
+            return True
 
-            self.counter += 1
         else:
-            self.col = False
+            return False
+
+    def get_hit(self, robot, target_robot, intensity):
+        for p in robot.projectiles:
+            if self.robot_projectile_collision(p, target_robot):
+                target_robot.life = max(target_robot.life - intensity,0)
+                robot.projectiles.remove(p)
+
+
+
+    def hit_bot(self, robot, target_robot,intensity):
+        for p in robot.projectiles:
+            if self.robot_projectile_collision(p, target_robot):
+                target_robot.life = max(target_robot.life - intensity, 0)
+                robot.projectiles.remove(p)
 
 
 class Water_Collision(Collision):
@@ -164,7 +174,7 @@ class Water_Collision(Collision):
     # detect if there is a collision with the water
     def water_Robot_collision(self, water_mask, robot):
         self.col = False
-        
+
         robot_img = rot_center(robot.robot_image, robot.angle)
 
         robo_mask = pygame.mask.from_surface(robot_img)
@@ -198,13 +208,8 @@ class Water_Collision(Collision):
 
 
 class Lava_Collision(Collision):
-    full_on_lava = False
-
-    def lava_Robot_collision(self, lava_mask, robot, x=0, y=0):
-        self.col = False
-        lava_vel = 1
     # a flag to know if the whole body of the robot is on the lavatiles
-        full_on_lava = False
+    lava_vel = 1
 
     # check if there is a collision between a robot and lava
     def lava_Robot_collision(self, lava_mask, robot, x=0, y=0):
@@ -214,11 +219,7 @@ class Lava_Collision(Collision):
         lava_overlap_area = lava_mask.overlap_area(robo_mask, offset)
 
         if lava_overlap_area == robo_mask.count():
-            self.full_on_lava = True
             robot.vel = robot.vel / 1.1  # slow down the robot
-        else:
-            self.full_on_lava = False
-
         # if 200 bits in over_lap_mask is set -> collision is active
         if lava_overlap_area >= 200:
             self.col = True
@@ -234,21 +235,18 @@ class Wall_Collision(Collision):
     top_right_corner_collision = None
     bottom_left_corner_collision = None
     bottom_right_corner_collision = None
-    projectile_collision = False
 
     def wall_projectile_collision(self, wall_mask, projectile, x=0, y=0):
-        projectile_mask = pygame.mask.from_surface(projectile.image)
+        projectile_mask = pygame.mask.from_surface(projectile.img)
         offset = (int(projectile.x - x), int(projectile.y - y))
         overlap_point = wall_mask.overlap(projectile_mask, offset)
         if overlap_point is not None:
-            self.projectile_collision = True
-            # what should happen?
-            pass
+            return True
         else:
-            self.projectile_collision = False
+            return False
 
     # check if there is a collision with the wall
-    def wall_Robot_collision(self, wall_mask, robot, x=0, y=0):
+    def wall_Player_Robot_collision(self, wall_mask, robot, x=0, y=0):
         offset = (int(robot.x - x), int(robot.y - y))
         # create a robot mask to check if there is collision between robot and the wall
         robot_mask = pygame.mask.from_surface(rot_center(robot.robot_image, robot.angle))
@@ -261,6 +259,16 @@ class Wall_Collision(Collision):
         # what to do if  there is collision with the wall
         if poi is not None:
             self.wall_collision(robot)
+
+    def wall_bot_collision(self, wall_mask, robot, x=0, y=0):
+        offset = (int(robot.x - x), int(robot.y - y))
+        # create a robot mask to check if there is collision between robot and the wall
+        robot_mask = pygame.mask.from_surface(rot_center(robot.robot_image, robot.angle))
+        poi = wall_mask.overlap(robot_mask, offset)
+        # craete mask for each corner of the robot, to know which of it has a collision
+        if poi is not None:
+            if robot.vel > 0:
+                robot.vel = -robot.vel / 2
 
     # what to do if there is a collision with the wall
     def wall_collision(self, robot):
@@ -413,7 +421,7 @@ class PlayerRobot(Robot):
 
 # StaticRobot is static and shoots periodically
 class StaticRobot(Robot):
-    def __init__(self, start_position, angle, robot_image, robot_gun_image, firing_speed = 3000):
+    def __init__(self, start_position, angle, robot_image, robot_gun_image, firing_speed=3000):
         # FIXME what fields do we really need
         self.x, self.y = start_position
         self.angle = angle
@@ -426,6 +434,7 @@ class StaticRobot(Robot):
         self.robot_gun_image = robot_gun_image
         self.projectiles = []
         self.firing_speed = firing_speed
+        self.life = 1
 
     def move_robot(self):
         # self.movement_direction()
@@ -437,7 +446,8 @@ class StaticRobot(Robot):
 
 # PatrolRobot has a static path where it patrols, if player is detected it stop and starts shooting
 class PatrolRobot(Robot):
-    def __init__(self, start_position, angle, max_velocity, rotation_velocity, acceleration, robot_image, robot_gun_image, xlim, ylim):
+    def __init__(self, start_position, angle, max_velocity, rotation_velocity, acceleration, robot_image,
+                 robot_gun_image, xlim, ylim):
         self.x, self.y = start_position
         self.angle = angle
         self.max_vel = max_velocity
@@ -452,6 +462,10 @@ class PatrolRobot(Robot):
         self.xlim = xlim
         self.ylim = ylim
         self.rotated = False
+        self.life = 3
+
+
+
 
     def move_robot(self):  # FIXME smoother rotation to come
         if self.moving:
@@ -467,13 +481,13 @@ class PatrolRobot(Robot):
         range = 400
         detection = False
         if self.angle == 270:
-            detection = self.x < pos[0] < self.x + range and self.y - width/2 < pos[1] < self.y + width/2
+            detection = self.x < pos[0] < self.x + range and self.y - width / 2 < pos[1] < self.y + width / 2
         elif self.angle == 90:
-            detection = self.x > pos[0] > self.x - range and self.y - width/2 < pos[1] < self.y + width/2
+            detection = self.x > pos[0] > self.x - range and self.y - width / 2 < pos[1] < self.y + width / 2
         elif self.angle == 0:
-            detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y > pos[1] > self.y - range
-        elif self.angle == 180: 
-            detection = self.x - width/2 < pos[0] < self.x + width/2 and self.y < pos[1] < self.y + range
+            detection = self.x - width / 2 < pos[0] < self.x + width / 2 and self.y > pos[1] > self.y - range
+        elif self.angle == 180:
+            detection = self.x - width / 2 < pos[0] < self.x + width / 2 and self.y < pos[1] < self.y + range
 
         if detection:
             self.moving = False
@@ -502,6 +516,7 @@ class BossRobot(Robot):
         self.compute_edges()
         self.vel_vector = (self.edges[0][0] - self.x, self.edges[0][1] - self.y)
         self.set_angle()
+        self.life = 5
 
     def move_robot(self):
         # compute direction and speed
@@ -513,7 +528,7 @@ class BossRobot(Robot):
             self.set_angle()
         self.move_forward()
 
-    def act(self, screen, player_pos, flag = False, shooting = False):
+    def act(self, screen, player_pos, flag=False, shooting=False):
         if norm((self.player_pos[0] - player_pos[0], self.player_pos[1] - player_pos[1])) > 100 or flag:
             self.vel = 2
             self.player_pos = player_pos
@@ -533,11 +548,11 @@ class BossRobot(Robot):
     def find_path(self, target_pos):
         if self.grid is not None: self.grid.cleanup
 
-        self.grid = Grid(50, 50, matrix = self.map)
-        start = self.grid.node(math.floor(self.x/20), math.floor(self.y/20))
-        end   = self.grid.node(math.floor(target_pos[0]/20), math.floor(target_pos[1]/20))
+        self.grid = Grid(50, 50, matrix=self.map)
+        start = self.grid.node(math.floor(self.x / 20), math.floor(self.y / 20))
+        end = self.grid.node(math.floor(target_pos[0] / 20), math.floor(target_pos[1] / 20))
 
-        finder = AStarFinder(diagonal_movement = DiagonalMovement.always)
+        finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
         self.path, _ = finder.find_path(start, end, self.grid)
 
     def compute_edges(self):
@@ -575,17 +590,18 @@ class BossRobot(Robot):
             for j in range(m):
                 x = bg[i][j]
                 if x == 2:
-                    assert(self.map[i][j] == 0)
+                    assert (self.map[i][j] == 0)
                     for a in range(-2, 3):
                         for b in range(-2, 3):
                             y = i + a
                             x = j + b
-                            if x < 0 or y < 0 or x >= m or y >= n: continue
-                            else: 
+                            if x < 0 or y < 0 or x >= m or y >= n:
+                                continue
+                            else:
                                 if self.map[i + a][j + b] != 0: self.map[i + a][j + b] = 0
 
     def create_grid(self, map):
-        self.grid = Grid(matrix = map)
+        self.grid = Grid(matrix=map)
 
     def convert_to_coordinates(self, pos):
         return (10 + 20 * pos[0], 10 + 20 * pos[1])
@@ -607,19 +623,20 @@ class BossRobot(Robot):
     def move_forward(self):
         self.movement_direction()
 
-    def draw(self, win, counter, robot, l_col, water_col):
+    def draw(self, win, counter, l_col, water_col):
         if l_col.col:
             win.blit(rot_center(explosion_effect[counter // 16], 0),
-                     (robot.x - 14, robot.y - 10))  # draw the explosion animation
+                     (self.x - 14, self.y - 10))  # draw the explosion animation
 
         win.blit(pygame.transform.rotate(self.robot_image, 0), (self.x, self.y))
 
         # draw a new surface of the robot under the water, it sould be drawn after the robot
-        if water_col.col:   
+        if water_col.col:
             win.blit(water_col.under_water_surf, (self.x, self.y))
 
-    def shoot(self, screen, v = 6, filename = "images/default_projectile.png", angle = None):
+    def shoot(self, screen, v=6, filename="images/default_projectile.png", angle=None):
         if angle is None: angle = self.angle
         p = Projectile(self.x + 30, self.y + 30, angle, v, filename)  # FIXME projectile offset
         p.draw(screen)
         self.projectiles.append(p)
+
