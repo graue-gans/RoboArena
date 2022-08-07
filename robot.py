@@ -108,7 +108,7 @@ class Robot:
     # shoot projectiles
     def shoot(self, screen, v=6, filename="images/default_projectile.png", angle=None):
         if angle is None: angle = self.angle
-        p = Projectile(self.x + 38, self.y + 70, angle, v, filename)  # FIXME projectile offset
+        p = Projectile(self.x + 38, self.y + 70, (angle* - 1) , v, filename)  # FIXME projectile offset
         p.draw(screen)
         self.projectiles.append(p)
 
