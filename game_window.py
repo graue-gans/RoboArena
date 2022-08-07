@@ -101,10 +101,14 @@ class Game_window(Map):
             player.move_robot(wall_col)
 
 
-
+            #shoot one once per second
             if key[pygame.K_f] and last_shot_time + 1000 <= time.time()*1000.0 :  # shoot with f
                 player.shoot(self.screen)
                 last_shot_time = time.time()*1000.0
+
+            for p in player.projectiles:
+                if wall_col.wall_projectile_collision(self.wall_mask(), p):
+                    player.projectiles.remove(p)
 
 
             player.update_projectiles(self.screen)
