@@ -6,119 +6,108 @@ So we began with reimplementing what we already had before (<a href="../index.ht
 Then the idea was to create a kind of rogue-like platform survival game but first we had to finish some more basics we had not done yet <br>
 <br>
 <h3>Tiles</h3>
-Since we did not yet do any work on visuals we started with creating five basic tiles <br>
+Since we did not yet do any work on visuals we started with creating three basic tiles, adding water and sand at a later point<br>
 <img src="../tiles/lava.jpg" width="80" height="80"> <img src="../tiles/wall.jpg" width="80" height="80"> <img src="../tiles/stone.jpg" width="80" height="80">
 <img src="../tiles/water.jpg" width="80" height="80">
 <img src="../tiles/sand.jpg" width="80" height="80">
 
 
 <br>
-<h2>How to save/load the background and render it?</h2>
-we used a 2dimensional list which countains all tileindexes, to save/load this list we use a csv-file<br>
-based on the index of a tile we draw a tile at the given position of the tile on the screen so we render the background.<br>
+<h2>How to save and load the background and render it</h2>
+We use a .csv file that contains integers each refering to a a specific tile, which then is loaded into our background matrix.<br>
+This background is then used to draw the tiles at their given position when rendering the screen.<br>
 <br>
 
-<h2>Main Manu</h2>
-You can click on play button and play the game, click on map to create a new map or exit to quit the game. <br>
-if you click the play button you have to choose a weather. To go back to the menu press "Escape"
+<h2>Main Menu</h2>
+You can click on play to play the game, click on map to edit your current or create a new map or click on exit to quit the game. <br>
+When choosing to play you are prompted to choose a weather. <br> 
+To go back to the menu press the esc-key at any time.
 <br>
-<img src="main_manu.gif" width="600" height="611">
+<img src="main_menu.gif" width="600" height="611">
 
 
 <h2>Custom Background</h2>
-We imlemented a map editor for editing the underlying csv files ingame<br>
+We implemented a map editor for editing the underlying csv files ingame.<br>
+While at first this was a feature created for ourselves to facilitate building more interesting maps we kept it as a feature. <br>
 <img src="new_custom_map.gif" width="600" height="611">
 
 <br>
 <h2>Collision</h2>
-<h4>How do we check for the collisions?</h4>
-To do the collisions we have to create masks of all surfaces which we want to check the collision from
+<h4>How do we check for collisions?</h4>
+To effectivly collide with different objects we create masks of all surfaces which we want to check collisions with.
 <h4>Tile Masks</h4>
-To create a Mask for a tile, we need to create a transparent screen for each tile then we can place <br>
-the tile on this transparent screen. After that we have to create a new suface of this screen, since we have this<br>
+To create a mask for a tile on the map we need to create a transparent screen for it and then place the actual tile on this transparent screen. 
+?
+After that we have to create a new suface of this screen, since we have this<br>
 surface we can build a mask of it. when we build a mask, we give each pixel of this surface a 0,1 value, any traparent<br>
 pixel will get 0 and the rest would get the 1.<br>
+?
 <h4>Robot Mask</h4>
-To build a mask for the robot or projectile we just need to build the mask <br>
-from its surface.<br>
+To build a mask for the robots and projectiles we create one from its surface.<br>
 <h4>Collision Check</h4>
-To check for the collision we can check if there is an overlap between<br>
-none transparent pixel of two masks. We can also check for the area of the collision so we know how many bits<br>
-are colliding.<br>
+To check for the collision we can check if there is an overlap between the <br>
+transparent pixels of two masks. We can also check for the area (overlap) of the collision so we know how many bits<br>
+are colliding which is usefull when checking if you are completely submerged inside water for example.<br>
 
 <h4>Sea</h4>
-We check a area for the collision of the robot with the sea, so when we the whole body of the robot is in the sea, the <br>
-the flag for collision will be set<br>
+We check the area of the collision of the robot with the sea, so when we the whole robot is submerged, the <br>
+flag for collision is set<br>
+?
 To have a other surface since the robot is under water we have to create a mask between the collision of masks of the robot and the sea<br>
 we we have collision we draw this surface on the robot so it seems like the robot is under water.<br>
+?
 
 
 <img src="new_water_collision.gif" width="600" height="611"><br>
 <h4>Lava</h4>
-we check a area for the collision of the robot with the lava, if we have a collision with 200 set bits, the robot would be slower<br>
-if the robot is complately in the lava it would be more slower.<br>
+We check the area of collision of the robot with the lava, if we have a collision with 200 set bits the robot is slowed down<br>
+If the robot is completely inside the lave its slowed down even more.<br>
 <img src="new_lava_collision.gif" width="600" height="611">
 
 
 <h4> Wall </h4>
-the check of the collision between a wall mask and the robot is more complicated because we want to implement a realistic collision.<br>
-To do that we have to know exactly which corner of the robot is colliding with the wall. So we create 4 surfaces of the 4 corner and build<br>
-masks of it.<br>
+The check of the collision between a wall mask and the robot is more complicated because we want to implement a realistic collision.<br>
+To do that we have to know exactly which corner of the robot is colliding with the wall. So we create surfaces for each corner and build<br>
+masks of them.<br>
 <img src="../images/tank_player/collision_check/top_left.png" width="150" height="200">
 <img src="../images/tank_player/collision_check/top_right.png" width="150" height="200">
 <br>
 <img src="../images/tank_player/collision_check/bottom_left.png" width="150" height="200">
 <img src="../images/tank_player/collision_check/bottom_right.png" width="150" height="200">
 <br>
-now we just have to know where the wall is and what the current angle is so we can create a realistic collision.
+Now we just have to know where the wall is and in which direction the robot is facing so we can create a realistic collision.
 <br>
 <img src="new_wall_collision.gif" width="600" height="611">
  
 
-<br>
-<h3>shooting </h3>
-<img src="shooting.gif" width="600" height="611">
-
-
 <h3>Enemies </h3>
-
-<img src="game.gif" width="600" height="611">
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h3>Better movement and collision</h3>
-We smoothed out the movement motions and added collision detection. <br>
-Depending on the material of the tile the player collides with they are either slowed or bounced back <br>
-(which is minimal for stone but expandable for different materials in the future) <br>
-<img src="movement.gif" alt="">
-<img src="wall_collision.gif" alt="">
-<img src="lava_collision.gif" alt="">
-
-<h3>Enemies</h3>
-Right now there is a static robot which shoots periodically <br>
-and a patroling robot which stops and shoots if it detects the player in front of it <br>
-<img src="static_robot.gif" alt=""> <br>
-<img src="patrol_robot.gif" alt="patrol_robot.gif not found">
-
+We implemented 3 types of enemies:
+<ul>
+    <li>A static robot that has a fixed position and angle and shoots periodically</li>
+    <li>A patroling robot that moves in a straight path between two set borders. <br>
+        If it detects the player in front of it stops and shoots at the players position</li>
+    <li>A boss robot that follows you around hunting you down. <br>
+        We used A* algorithm to calculate the shortest path between the boss and player. <br>
+        While wall tiles are set as fixed borders, every other tile has a specific weight <br>
+        associated with it. So if there is no other possibility the boss will also go <br>
+        through lava to catch you!</li>
+</ul>
+<img src="game.gif" width="600" height="611"><br>
+Naturally with robot enemies there come projectiles flying at you. <br>
+Both the player (by pressing the f-key) and the enemies can shoot lava bullets at each other. <br>
+<img src="shooting.gif" width="600" height="611"><br>
+<h4>Will you be able to prove yourself in this fiery RoboArena?</h4>
 
 <h2><a href="uml.png">UML diagram</a></h2>
 
 
-<h2>Possible Outlook</h2>
+<h2>Outlook</h2>
 <ul>
-    <li>More 'intelligent' enemies, e.g. bosses</li>
     <li>More diverse levels with higher difficulties</li>
+    <li>Tweaking maximum velocities and accerleration for player and enemies</li>
     <li>Scoreboard or story progression</li>
+    <li>Transform the map builder into a level designer where you can <br>
+        also place robots on the map for custom levels</li>
     <li>Custom images/animations for different robots and projectiles</li>
     <li>Add collectable items</li>
     <li>Local multiplayer</li>
