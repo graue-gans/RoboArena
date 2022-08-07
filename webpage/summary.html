@@ -6,20 +6,24 @@ So we began with reimplementing what we already had before (<a href="../index.ht
 Then the idea was to create a kind of rogue-like platform survival game but first we had to finish some more basics we had not done yet <br>
 <br>
 <h3>Tiles</h3>
-Since we did not yet do any work on visuals we started with creating three basic tiles <br>
+Since we did not yet do any work on visuals we started with creating five basic tiles <br>
 <img src="../tiles/lava.jpg" width="80" height="80"> <img src="../tiles/wall.jpg" width="80" height="80"> <img src="../tiles/stone.jpg" width="80" height="80">
-<br>
-and created a map editor for editing the underlying csv files ingame <br>
-<img src="map_editor.gif" width="600" height="611">
+<img src="../tiles/water.jpg" width="80" height="80">
+<img src="../tiles/sand.jpg" width="80" height="80">
 
+
+<br>
 <h2>How to save/load the background and render it?</h2>
 we used a 2dimensional list which countains all tileindexes, to save/load this list we use a csv-file<br>
 based on the index of a tile we draw a tile at the given position of the tile on the screen so we render the background.<br>
-
-
+<br>
 
 <h2>Main Manu</h2>
-....
+You can click on play button and play the game, click on map to create a new map or exit to quit the game. <br>
+if you click the play button you have to choose a weather. To go back to the menu press "Escape"
+<br>
+<img src="main_manu.gif" width="600" height="611">
+
 
 <h2>Custom Background</h2>
 We imlemented a map editor for editing the underlying csv files ingame<br>
@@ -72,6 +76,20 @@ now we just have to know where the wall is and what the current angle is so we c
  
 
 <br>
+<h3>shooting </h3>
+<img src="shooting.gif" width="600" height="611">
+
+
+<h3>Enemies </h3>
+
+<img src="game.gif" width="600" height="611">
+
+
+
+
+
+
+
 
 
 
