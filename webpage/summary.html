@@ -30,18 +30,23 @@ To go back to the menu press the esc-key at any time.
 We implemented a map editor for editing the underlying csv files ingame.<br>
 While at first this was a feature created for ourselves to facilitate building more interesting maps we kept it as a feature. <br>
 <img src="new_custom_map.gif" width="600" height="611">
-
 <br>
+<h2>pausing/unpausing</h2>
+You can pause the game by pressing "f" and unpause the game by pressing "space". You are also abble to leave the game and go to the manu<br>
+by pressing "escape"
+<br>
+<img src="pausing.gif" width="600" height="611">
+<br>
+
 <h2>Collision</h2>
 <h4>How do we check for collisions?</h4>
 To effectivly collide with different objects we create masks of all surfaces which we want to check collisions with.
 <h4>Tile Masks</h4>
-To create a mask for a tile on the map we need to create a transparent screen for it and then place the actual tile on this transparent screen. 
-?
-After that we have to create a new suface of this screen, since we have this<br>
-surface we can build a mask of it. when we build a mask, we give each pixel of this surface a 0,1 value, any traparent<br>
-pixel will get 0 and the rest would get the 1.<br>
-?
+We need a surface with every tiles which we want to check collisions with, at first we need a transparent screen <br>
+since we have it we have to blit the tiles on this screen, now we just have to build a surface from this screen and make a mask from it<br>
+we do this process for every tile type in each iteration in the game loop.<br>
+A mask has exactly as many pixels as the surface but the every pixel can just be transparent(0) or none-transparent(1).
+
 <h4>Robot Mask</h4>
 To build a mask for the robots and projectiles we create one from its surface.<br>
 <h4>Collision Check</h4>
@@ -51,11 +56,11 @@ are colliding which is usefull when checking if you are completely submerged ins
 
 <h4>Sea</h4>
 We check the area of the collision of the robot with the sea, so when we the whole robot is submerged, the <br>
-flag for collision is set<br>
-?
-To have a other surface since the robot is under water we have to create a mask between the collision of masks of the robot and the sea<br>
-we we have collision we draw this surface on the robot so it seems like the robot is under water.<br>
-?
+flag for collision is set so we can use this flag to do the robot slower or any other functionality<br>
+
+To be able to dive the car in the sea, we have to change the surface when there is collision between both masks. They way we do this is we <br>
+take the overlap mask(set pixels) and build a surface of it then we blit it on the screen with the same position as the robot with different color.
+
 
 
 <img src="new_water_collision.gif" width="600" height="611"><br>
@@ -96,6 +101,24 @@ We implemented 3 types of enemies:
 Naturally with robot enemies there come projectiles flying at you. <br>
 Both the player (by pressing the f-key) and the enemies can shoot lava bullets at each other. <br>
 <img src="shooting.gif" width="600" height="611"><br>
+
+<h3>life</h3>
+Every robot has a certain number of lives.
+<br>
+<img src="life.png" width="600" height="611">
+<br>
+ Player robot has 10, static robot has 1, patroling robot 3 and the boss robot has 5. Any hit does 1 damage<br>
+except the boss robot (it does 2 damage). And one damage destroys one life. when a robot has 0 lives it dies and disappears<br>
+<img src="killing.gif" width="600" height="611">
+
+<h2>Winning/Losing</h2>
+when you have 0 lives you will lose the game and wenn you kill the boss robot you will win the game. Its eayser to win the game <br>
+when you start killing other robots first.
+<br>
+
+
+
+
 <h4>Will you be able to prove yourself in this fiery RoboArena?</h4>
 
 <h2><a href="uml.png">UML diagram</a></h2>
